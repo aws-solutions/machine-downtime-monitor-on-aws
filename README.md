@@ -1,4 +1,4 @@
-## My Project
+## Machine Downtime Monitor on AWS
 
 TODO: Fill this README out!
 
