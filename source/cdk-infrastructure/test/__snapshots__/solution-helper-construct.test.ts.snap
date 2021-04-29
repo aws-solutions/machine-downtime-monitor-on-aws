@@ -1,0 +1,208 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Solution helper snapshot and variables 1`] = `
+Object {
+  "Conditions": Object {
+    "anonymousDataCondition": Object {
+      "Fn::Equals": Array [
+        "No",
+        "Yes",
+      ],
+    },
+  },
+  "Resources": Object {
+    "TestSolutionHelperCustomResourceLambda6BB6EA27": Object {
+      "DependsOn": Array [
+        "TestSolutionHelperCustomResourceLambdaServiceRoleDC777AF2",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "CloudWatch permissions are granted by the LambdaBasicExecutionRole",
+            },
+            Object {
+              "id": "W89",
+              "reason": "VPC for Lambda is not needed. This serverless architecture does not deploy a VPC.",
+            },
+            Object {
+              "id": "W92",
+              "reason": "ReservedConcurrentExecutions is not needed for this Lambda function.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "test-source-code-bucket",
+          "S3Key": "test-source-code-key-prefix/solution-helper.zip",
+        },
+        "Description": "Performs various Solution lifecycle actions when invoked as a CloudFormation Custom Resource",
+        "Environment": Object {
+          "Variables": Object {
+            "ANONYMOUS_DATA_UUID": Object {
+              "Fn::GetAtt": Array [
+                "TestSolutionHelperGenerateSolutionConstantsCustomResource6D4DA57C",
+                "AnonymousDataUUID",
+              ],
+            },
+            "SEND_ANONYMOUS_DATA": "Yes",
+            "SOLUTION_ID": "TestSolution",
+            "SOLUTION_VERSION": "beta",
+          },
+        },
+        "Handler": "solution-helper/index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperCustomResourceLambdaServiceRoleDC777AF2",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestSolutionHelperCustomResourceLambdaServiceRoleDC777AF2": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestSolutionHelperGenerateSolutionConstantsCustomResource6D4DA57C": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Action": "GENERATE_SOLUTION_CONSTANTS",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperGenerateSolutionConstantsLambda5CE48C69",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestSolutionHelperGenerateSolutionConstantsLambda5CE48C69": Object {
+      "DependsOn": Array [
+        "TestSolutionHelperGenerateSolutionConstantsLambdaServiceRole9B3DCC97",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "CloudWatch permissions are granted by the LambdaBasicExecutionRole",
+            },
+            Object {
+              "id": "W89",
+              "reason": "VPC for Lambda is not needed. This serverless architecture does not deploy a VPC.",
+            },
+            Object {
+              "id": "W92",
+              "reason": "ReservedConcurrentExecutions is not needed for this Lambda function.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "test-source-code-bucket",
+          "S3Key": "test-source-code-key-prefix/solution-helper.zip",
+        },
+        "Description": "Generates an anonymous UUID and a lower case stack name for sending metrics and resource creation",
+        "Environment": Object {
+          "Variables": Object {
+            "STACK_NAME": Object {
+              "Ref": "AWS::StackName",
+            },
+          },
+        },
+        "Handler": "solution-helper/index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperGenerateSolutionConstantsLambdaServiceRole9B3DCC97",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 3,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestSolutionHelperGenerateSolutionConstantsLambdaServiceRole9B3DCC97": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestSolutionHelperSolutionLifecycleMetricCustomResource14927B8D": Object {
+      "Condition": "anonymousDataCondition",
+      "Properties": Object {
+        "Action": "SOLUTION_LIFECYCLE",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperCustomResourceLambda6BB6EA27",
+            "Arn",
+          ],
+        },
+        "SolutionParameters": Object {
+          "DeployM2C": "Yes",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+    },
+  },
+}
+`;

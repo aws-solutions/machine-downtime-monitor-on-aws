@@ -1,0 +1,28 @@
+/*
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
+*/
+
+ .chart-container-div {
+    width: 1000px;
+    height: 800px;
+}
+
+.breadcrumb-nav-link {
+    color: blue !important;
+    text-decoration: underline;
+    font-size: small;
+}
+
+.machine-detail-loading-spinner {
+    margin-left: 1rem;
+}
+
+.total-production-count {
+    position: relative;
+    float: right;
+}
+
+.machine-detail-back-col {
+    margin-bottom: .8rem;
+}

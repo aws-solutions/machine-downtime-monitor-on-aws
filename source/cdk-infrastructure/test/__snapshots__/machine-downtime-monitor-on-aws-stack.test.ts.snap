@@ -1,0 +1,5087 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Machine Downtime Monitor on AWS stack snapshot test 1`] = `
+Object {
+  "Conditions": Object {
+    "BIReportingQuickSightCondition749C0783": Object {
+      "Fn::Not": Array [
+        Object {
+          "Fn::Equals": Array [
+            Object {
+              "Ref": "QuickSightPrincipalArn",
+            },
+            "",
+          ],
+        },
+      ],
+    },
+    "anonymousUsageCondition": Object {
+      "Fn::Equals": Array [
+        Object {
+          "Fn::FindInMap": Array [
+            "Solution",
+            "Config",
+            "SendAnonymousData",
+          ],
+        },
+        "Yes",
+      ],
+    },
+    "deployM2CCondition": Object {
+      "Fn::Equals": Array [
+        Object {
+          "Ref": "DeployM2C",
+        },
+        "Yes",
+      ],
+    },
+  },
+  "Description": "TEST_DESCRIPTION",
+  "Mappings": Object {
+    "Solution": Object {
+      "Config": Object {
+        "S3BucketPrefix": "TEST_BUCKET_PREFIX",
+        "S3KeyPrefix": "TEST_SOLUTION_NAME/TEST_SOLUTION_VERSION",
+        "SendAnonymousData": "Yes",
+        "SolutionId": "TEST_SOLUTION_ID",
+        "Version": "TEST_SOLUTION_VERSION",
+      },
+    },
+  },
+  "Metadata": Object {
+    "AWS::CloudFormation::Interface": Object {
+      "ParameterGroups": Array [
+        Object {
+          "Label": Object {
+            "default": "Dashboard Configuration",
+          },
+          "Parameters": Array [
+            "DefaultUserEmail",
+          ],
+        },
+        Object {
+          "Label": Object {
+            "default": "Machine to Cloud Connectivity Framework Deployment (Optional)",
+          },
+          "Parameters": Array [
+            "DeployM2C",
+            "M2CExistingGreengrassGroupID",
+          ],
+        },
+        Object {
+          "Label": Object {
+            "default": "QuickSight Configuration (Optional)",
+          },
+          "Parameters": Array [
+            "QuickSightPrincipalArn",
+          ],
+        },
+      ],
+      "ParameterLabels": Object {
+        "DefaultUserEmail": Object {
+          "default": "Default Dashboard User Email Address",
+        },
+        "DeployM2C": Object {
+          "default": "Deploy Machine to Cloud Connectivity Framework as a nested template?",
+        },
+        "M2CExistingGreengrassGroupID": Object {
+          "default": "Existing Greengrass Group ID (if deploying Machine to Cloud Connectivity Framework)",
+        },
+        "QuickSightPrincipalArn": Object {
+          "default": "If you have QuickSight Enterprise Edition subscription, enter the QuickSight User Principal ARN below and a QuickSight dashboard will be created for you",
+        },
+      },
+    },
+  },
+  "Outputs": Object {
+    "DashboardUrl": Object {
+      "Description": "TEST_SOLUTION_DISPLAY_NAME Dashboard",
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Fn::GetAtt": Array [
+                "FrontEndHostingDistributionToS3CloudFrontDistribution6DBBF508",
+                "DomainName",
+              ],
+            },
+          ],
+        ],
+      },
+    },
+    "GlueMetadataBucket": Object {
+      "Description": "S3 bucket that will store Glue metadata including QuickSight manifest, CSVs, and Glue job scripts",
+      "Value": Object {
+        "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+      },
+    },
+    "ParquetOutputBucket": Object {
+      "Description": "S3 bucket that will hold parquet data converted from the raw data bucket",
+      "Value": Object {
+        "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+      },
+    },
+    "RawDataBucket": Object {
+      "Description": "S3 bucket that will hold all raw data that was sent through the Kinesis Stream",
+      "Value": Object {
+        "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+      },
+    },
+    "StreamName": Object {
+      "Description": "Name of the Kinesis Stream that is the source of the machine data",
+      "Value": Object {
+        "Ref": "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+      },
+    },
+  },
+  "Parameters": Object {
+    "DefaultUserEmail": Object {
+      "AllowedPattern": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$",
+      "ConstraintDescription": "Default User Email must be a valid email address",
+      "Description": "An email will be sent with a temporary password and a link to the dashboard",
+      "Type": "String",
+    },
+    "DeployM2C": Object {
+      "AllowedValues": Array [
+        "No",
+        "Yes",
+      ],
+      "Default": "No",
+      "Description": "Machine to Cloud Connectivity Framework uses AWS IoT Greengrass to bring machine data into the AWS Cloud. Selecting 'Yes' will deploy Machine to Cloud Connectivity Framework as a nested template and configure it to send data to the Amazon Kinesis Data Stream deployed by Machine Downtime Monitor. For more information, please see the implementation guide",
+      "Type": "String",
+    },
+    "M2CExistingGreengrassGroupID": Object {
+      "AllowedPattern": "[a-zA-Z0-9-]*",
+      "ConstraintDescription": "Greengrass group ID should match the allowed pattern: [a-zA-Z0-9-]",
+      "Description": "If you selected 'Yes' for deploying Machine to Cloud Connectivity Framework as a nested template and want to use an EXISTING Greengrass group, fill out this parameter. The Greengrass Group ID can be found in the Settings option of your Greengrass group in the console. If you selected 'Yes' for deploying Machine to Cloud Connectivity Framework as a nested template and leave this parameter blank, a Greengrass Group will be created for you. If you selected 'No', this parameter is ignored.",
+      "Type": "String",
+    },
+    "QuickSightPrincipalArn": Object {
+      "AllowedPattern": "^$|arn:\\\\S+:quicksight:\\\\S+:\\\\d{12}:user/\\\\S+$",
+      "ConstraintDescription": "Provide an arn matching an Amazon Quicksight User ARN. The input did not match the validation pattern.",
+      "Description": "Please see the 'Data analysis' section under 'Solution components' in the implementation guide for more information: https://docs.aws.amazon.com/solutions/latest/machine-downtime-monitor-on-aws/",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "BIReportingEtlGlueCommonPolicyED89D2BD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "BIReportingEtlMetadataS3BucketE9730D65",
+                        "Arn",
+                      ],
+                    },
+                    "/glue-job-scripts/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":logs:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":log-group:/aws-glue/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlGlueCommonPolicyED89D2BD",
+        "Roles": Array [
+          Object {
+            "Ref": "BIReportingEtlGlueConfigurationJobRole043DA03B",
+          },
+          Object {
+            "Ref": "BIReportingEtlGlueConvertParquetJobRoleC57951D6",
+          },
+          Object {
+            "Ref": "BIReportingEtlGlueUpdateCrawlerJobRoleE6757DA3",
+          },
+          Object {
+            "Ref": "BIReportingEtlGlueCrawlerRole9539ACAE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingEtlGlueConfigurationJob0770597E": Object {
+      "DependsOn": Array [
+        "BIReportingEtlGlueCustomResourceFBDEC0BA",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+                },
+                "/glue-job-scripts/configuration.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--config_table": Object {
+            "Ref": "FrontEndAppSyncApiConfigTable191DB72A",
+          },
+          "--csv_prefix": "csv",
+          "--machine_config_information_csv": "machine_config_information.csv",
+          "--machine_config_information_manifest": "machine_config_information_manifest.json",
+          "--machine_information_csv": "machine_information.csv",
+          "--machine_information_manifest": "machine_information_manifest.json",
+          "--manifest_prefix": "manifest",
+          "--output_bucket": Object {
+            "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+          },
+          "--ui_reference_table": Object {
+            "Ref": "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+          },
+          "--user_agent_extra": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "{\\"user_agent_extra\\": \\"AwsSolution/",
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "SolutionId",
+                  ],
+                },
+                "/TEST_SOLUTION_VERSION\\"}",
+              ],
+            ],
+          },
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue configuration job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "BIReportingEtlGlueConfigurationJobRole043DA03B",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "BIReportingEtlGlueConfigurationJobRole043DA03B": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "BIReportingEtlGlueConfigurationJobRoleDefaultPolicy37F23B8A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiConfigTable191DB72A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlMetadataS3BucketE9730D65",
+                          "Arn",
+                        ],
+                      },
+                      "/csv/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlMetadataS3BucketE9730D65",
+                          "Arn",
+                        ],
+                      },
+                      "/manifest/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlGlueConfigurationJobRoleDefaultPolicy37F23B8A",
+        "Roles": Array [
+          Object {
+            "Ref": "BIReportingEtlGlueConfigurationJobRole043DA03B",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingEtlGlueConfigurationJobTriggerF0172159": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "BIReportingEtlGlueConfigurationJob0770597E",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue configuration job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-ConfigurationJobTrigger",
+            ],
+          ],
+        },
+        "Schedule": "cron(0 1 * * ? *)",
+        "StartOnCreation": true,
+        "Type": "SCHEDULED",
+        "WorkflowName": Object {
+          "Ref": "BIReportingEtlGlueWorkflow7D34E095",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "BIReportingEtlGlueConvertParquetJobBB9A27AD": Object {
+      "DependsOn": Array [
+        "BIReportingEtlGlueCustomResourceFBDEC0BA",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+                },
+                "/glue-job-scripts/convert_parquet.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--config_table": Object {
+            "Ref": "FrontEndAppSyncApiConfigTable191DB72A",
+          },
+          "--input_bucket": Object {
+            "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+          },
+          "--output_bucket": Object {
+            "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+          },
+          "--user_agent_extra": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "{\\"user_agent_extra\\": \\"AwsSolution/",
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "SolutionId",
+                  ],
+                },
+                "/TEST_SOLUTION_VERSION\\"}",
+              ],
+            ],
+          },
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue parquet conversion job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "BIReportingEtlGlueConvertParquetJobRoleC57951D6",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "BIReportingEtlGlueConvertParquetJobRoleC57951D6": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "BIReportingEtlGlueConvertParquetJobRoleDefaultPolicy3D232A4A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "dynamodb:GetItem",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FrontEndAppSyncApiConfigTable191DB72A",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "BIReportingEtlParquetS3Bucket7DF9D60C",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlParquetS3Bucket7DF9D60C",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:DeleteObject",
+                "s3:PutObject",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "BIReportingEtlParquetS3Bucket7DF9D60C",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlGlueConvertParquetJobRoleDefaultPolicy3D232A4A",
+        "Roles": Array [
+          Object {
+            "Ref": "BIReportingEtlGlueConvertParquetJobRoleC57951D6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingEtlGlueConvertParquetJobTriggerF23F0A18": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "BIReportingEtlGlueConvertParquetJobBB9A27AD",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue parquet conversion job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-ConvertParquetJobTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "JobName": Object {
+                "Ref": "BIReportingEtlGlueConfigurationJob0770597E",
+              },
+              "LogicalOperator": "EQUALS",
+              "State": "SUCCEEDED",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "BIReportingEtlGlueWorkflow7D34E095",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "BIReportingEtlGlueCrawlerF02572E0": Object {
+      "Properties": Object {
+        "DatabaseName": Object {
+          "Ref": "BIReportingEtlGlueDatabaseE458135A",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "BIReportingEtlGlueCrawlerRole9539ACAE",
+            "Arn",
+          ],
+        },
+        "SchemaChangePolicy": Object {
+          "DeleteBehavior": "LOG",
+          "UpdateBehavior": "UPDATE_IN_DATABASE",
+        },
+        "Targets": Object {
+          "S3Targets": Array [
+            Object {
+              "Path": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "s3://",
+                    Object {
+                      "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+                    },
+                    "/",
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Crawler",
+    },
+    "BIReportingEtlGlueCrawlerRole9539ACAE": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "BIReportingEtlGlueCrawlerRoleDefaultPolicy3360528A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "BIReportingEtlParquetS3Bucket7DF9D60C",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "BIReportingEtlParquetS3Bucket7DF9D60C",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "glue:GetDatabase",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":catalog",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":database/",
+                      Object {
+                        "Ref": "BIReportingEtlGlueDatabaseE458135A",
+                      },
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "glue:GetTable",
+                "glue:CreateTable",
+                "glue:UpdateTable",
+                "glue:BatchGetPartition",
+                "glue:BatchCreatePartition",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":catalog",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":database/",
+                      Object {
+                        "Ref": "BIReportingEtlGlueDatabaseE458135A",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":table/",
+                      Object {
+                        "Ref": "BIReportingEtlGlueDatabaseE458135A",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlGlueCrawlerRoleDefaultPolicy3360528A",
+        "Roles": Array [
+          Object {
+            "Ref": "BIReportingEtlGlueCrawlerRole9539ACAE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingEtlGlueCrawlerTrigger08670966": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "CrawlerName": Object {
+              "Ref": "BIReportingEtlGlueCrawlerF02572E0",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-CrawlerTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "JobName": Object {
+                "Ref": "BIReportingEtlGlueConvertParquetJobBB9A27AD",
+              },
+              "LogicalOperator": "EQUALS",
+              "State": "SUCCEEDED",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "BIReportingEtlGlueWorkflow7D34E095",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "BIReportingEtlGlueCustomResourceFBDEC0BA": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "BIReportingEtlSolutionHelperEtlPolicy59CA531A",
+      ],
+      "Properties": Object {
+        "Action": "CONFIGURE_ETL",
+        "CsvPrefix": "csv",
+        "DestinationBucket": Object {
+          "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+        },
+        "GlueJobScripts": Array [
+          "configuration.py",
+          "convert_parquet.py",
+          "update_crawler.py",
+        ],
+        "GlueJobScriptsPrefix": "glue-job-scripts",
+        "MachineConfigInformationPrefix": "machine_config_information",
+        "MachineInformationPrefix": "machine_information",
+        "ManifestPrefix": "manifest",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambda6F46857E",
+            "Arn",
+          ],
+        },
+        "SourceBucket": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Fn::FindInMap": Array [
+                  "Solution",
+                  "Config",
+                  "S3BucketPrefix",
+                ],
+              },
+              "-",
+              Object {
+                "Ref": "AWS::Region",
+              },
+            ],
+          ],
+        },
+        "SourcePrefix": Object {
+          "Fn::FindInMap": Array [
+            "Solution",
+            "Config",
+            "S3KeyPrefix",
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "BIReportingEtlGlueDatabaseE458135A": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseInput": Object {
+          "Name": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC",
+                    "LowerCaseStackName",
+                  ],
+                },
+                "-database",
+              ],
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "BIReportingEtlGlueTableF2391E6B": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseName": Object {
+          "Ref": "BIReportingEtlGlueDatabaseE458135A",
+        },
+        "TableInput": Object {
+          "Description": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "Table for ",
+                Object {
+                  "Ref": "AWS::StackName",
+                },
+                " CloudFormation stack",
+              ],
+            ],
+          },
+          "Name": Object {
+            "Fn::Join": Array [
+              "_",
+              Object {
+                "Fn::Split": Array [
+                  "-",
+                  Object {
+                    "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+                  },
+                ],
+              },
+            ],
+          },
+          "Parameters": Object {
+            "classification": "parquet",
+            "has_encrypted_data": false,
+          },
+          "PartitionKeys": Array [
+            Object {
+              "Comment": "Year",
+              "Name": "Partition_0",
+              "Type": "string",
+            },
+            Object {
+              "Comment": "Month",
+              "Name": "Partition_1",
+              "Type": "string",
+            },
+            Object {
+              "Comment": "Day",
+              "Name": "Partition_2",
+              "Type": "string",
+            },
+          ],
+          "StorageDescriptor": Object {
+            "Columns": Array [
+              Object {
+                "Name": "quality",
+                "Type": "string",
+              },
+              Object {
+                "Name": "value",
+                "Type": "string",
+              },
+              Object {
+                "Name": "timestamp",
+                "Type": "string",
+              },
+              Object {
+                "Name": "tag",
+                "Type": "string",
+              },
+              Object {
+                "Name": "id",
+                "Type": "string",
+              },
+            ],
+            "Compressed": false,
+            "InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+            "Location": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "s3://",
+                  Object {
+                    "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+                  },
+                  "/",
+                ],
+              ],
+            },
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+            "SerdeInfo": Object {
+              "SerializationLibrary": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+            },
+            "StoredAsSubDirectories": false,
+          },
+          "TableType": "EXTERNAL_TABLE",
+        },
+      },
+      "Type": "AWS::Glue::Table",
+    },
+    "BIReportingEtlGlueUpdateCrawlerJob0C0407E0": Object {
+      "DependsOn": Array [
+        "BIReportingEtlGlueCustomResourceFBDEC0BA",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+                },
+                "/glue-job-scripts/update_crawler.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--glue_crawler": Object {
+            "Ref": "BIReportingEtlGlueCrawlerF02572E0",
+          },
+          "--glue_trigger": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Ref": "AWS::StackName",
+                },
+                "-UpdateCrawlerJobTrigger",
+              ],
+            ],
+          },
+          "--user_agent_extra": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "{\\"user_agent_extra\\": \\"AwsSolution/",
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "SolutionId",
+                  ],
+                },
+                "/TEST_SOLUTION_VERSION\\"}",
+              ],
+            ],
+          },
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler update job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "BIReportingEtlGlueUpdateCrawlerJobRoleE6757DA3",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "BIReportingEtlGlueUpdateCrawlerJobRoleDefaultPolicyC6A29140": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "glue:UpdateCrawler",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":glue:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":crawler/",
+                    Object {
+                      "Ref": "BIReportingEtlGlueCrawlerF02572E0",
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "glue:StopTrigger",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":glue:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":trigger/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "-UpdateCrawlerJobTrigger",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlGlueUpdateCrawlerJobRoleDefaultPolicyC6A29140",
+        "Roles": Array [
+          Object {
+            "Ref": "BIReportingEtlGlueUpdateCrawlerJobRoleE6757DA3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingEtlGlueUpdateCrawlerJobRoleE6757DA3": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "BIReportingEtlGlueUpdateCrawlerJobTrigger55F1069E": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "BIReportingEtlGlueUpdateCrawlerJob0C0407E0",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler update job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-UpdateCrawlerJobTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "CrawlState": "SUCCEEDED",
+              "CrawlerName": Object {
+                "Ref": "BIReportingEtlGlueCrawlerF02572E0",
+              },
+              "LogicalOperator": "EQUALS",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "BIReportingEtlGlueWorkflow7D34E095",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "BIReportingEtlGlueWorkflow7D34E095": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Workflow for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Workflow",
+    },
+    "BIReportingEtlMetadataS3BucketE9730D65": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "CommonResourcesLogBucketFC1ABCC9",
+          },
+          "LogFilePrefix": "metadata/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "BIReportingEtlMetadataS3BucketPolicyE0502858": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "BIReportingEtlMetadataS3BucketE9730D65",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "BIReportingEtlParquetS3Bucket7DF9D60C": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "CommonResourcesLogBucketFC1ABCC9",
+          },
+          "LogFilePrefix": "parquet/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "BIReportingEtlParquetS3BucketPolicy40412D59": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "BIReportingEtlParquetS3Bucket7DF9D60C",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "BIReportingEtlParquetS3Bucket7DF9D60C",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "BIReportingEtlSolutionHelperEtlPolicy59CA531A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::",
+                    Object {
+                      "Fn::FindInMap": Array [
+                        "Solution",
+                        "Config",
+                        "S3BucketPrefix",
+                      ],
+                    },
+                    "-",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlMetadataS3BucketE9730D65",
+                          "Arn",
+                        ],
+                      },
+                      "/csv/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlMetadataS3BucketE9730D65",
+                          "Arn",
+                        ],
+                      },
+                      "/manifest/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "BIReportingEtlMetadataS3BucketE9730D65",
+                          "Arn",
+                        ],
+                      },
+                      "/glue-job-scripts/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingEtlSolutionHelperEtlPolicy59CA531A",
+        "Roles": Array [
+          Object {
+            "Ref": "SolutionHelperCustomResourceLambdaServiceRole78D26509",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "BIReportingQuickSightQuickSightCustomResource98537A5B": Object {
+      "Condition": "BIReportingQuickSightCondition749C0783",
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "BIReportingEtlGlueCustomResourceFBDEC0BA",
+        "BIReportingQuickSightSolutionHelperQuickSightPolicyDD74D3C9",
+      ],
+      "Properties": Object {
+        "AccountId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "Action": "CREATE_QUICKSIGHT",
+        "GlueDatabaseName": Object {
+          "Ref": "BIReportingEtlGlueDatabaseE458135A",
+        },
+        "GlueTableName": Object {
+          "Ref": "BIReportingEtlGlueTableF2391E6B",
+        },
+        "Metadata": Object {
+          "BucketName": Object {
+            "Ref": "BIReportingEtlMetadataS3BucketE9730D65",
+          },
+          "MachineConfigInformationPrefix": "machine_config_information",
+          "MachineInformationPrefix": "machine_information",
+          "ManifestPrefix": "manifest",
+        },
+        "PrincipalArn": Object {
+          "Ref": "QuickSightPrincipalArn",
+        },
+        "QuickSightTemplate": "TEST_QUICKSIGHT_TEMPLATE",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambda6F46857E",
+            "Arn",
+          ],
+        },
+        "StackName": Object {
+          "Ref": "AWS::StackName",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "BIReportingQuickSightSolutionHelperQuickSightPolicyDD74D3C9": Object {
+      "Condition": "BIReportingQuickSightCondition749C0783",
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSource",
+                "quicksight:DeleteDataSource",
+                "quicksight:PassDataSource",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":datasource/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSet",
+                "quicksight:DeleteDataSet",
+                "quicksight:PassDataSet",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dataset/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateAnalysis",
+                "quicksight:DeleteAnalysis",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":analysis/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDashboard",
+                "quicksight:DeleteDashboard",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dashboard/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "quicksight:DescribeTemplate",
+              "Effect": "Allow",
+              "Resource": "TEST_QUICKSIGHT_TEMPLATE",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "BIReportingQuickSightSolutionHelperQuickSightPolicyDD74D3C9",
+        "Roles": Array [
+          Object {
+            "Ref": "SolutionHelperCustomResourceLambdaServiceRole78D26509",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CommonResourcesLogBucketFC1ABCC9": Object {
+      "DeletionPolicy": "Retain",
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W35",
+              "reason": "This bucket is to store S3 logs, so it does not require access logs.",
+            },
+            Object {
+              "id": "W51",
+              "reason": "This bucket is to store S3 logs, so it does not require S3 policy.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "AccessControl": "LogDeliveryWrite",
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "FrontEndAppSyncApiConfigTable191DB72A": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "type",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "type",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": Object {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": Object {
+          "SSEEnabled": true,
+        },
+        "StreamSpecification": Object {
+          "StreamViewType": "NEW_AND_OLD_IMAGES",
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FrontEndAppSyncApiGraphqlApiBA38E575": Object {
+      "Properties": Object {
+        "AuthenticationType": "AWS_IAM",
+        "LogConfig": Object {
+          "CloudWatchLogsRoleArn": Object {
+            "Fn::GetAtt": Array [
+              "FrontEndAppSyncApiGraphqlApiLogRole2DBD922F",
+              "Arn",
+            ],
+          },
+          "ExcludeVerboseContent": false,
+          "FieldLogLevel": "NONE",
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-api",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::AppSync::GraphQLApi",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSource75B5C805": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DynamoDBConfig": Object {
+          "AwsRegion": Object {
+            "Ref": "AWS::Region",
+          },
+          "TableName": Object {
+            "Ref": "FrontEndAppSyncApiConfigTable191DB72A",
+          },
+        },
+        "Name": "ConfigDataSource",
+        "ServiceRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiConfigDataSourceServiceRole4D40DD99",
+            "Arn",
+          ],
+        },
+        "Type": "AMAZON_DYNAMODB",
+      },
+      "Type": "AWS::AppSync::DataSource",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSourceMutationupdateMachineConfigResolverCB9895EC": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiConfigDataSource75B5C805",
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "ConfigDataSource",
+        "FieldName": "updateMachineConfig",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    \\"version\\": \\"2018-05-29\\",
+    \\"operation\\": \\"UpdateItem\\",
+    \\"key\\" : {
+        \\"id\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+        \\"type\\" : $util.dynamodb.toDynamoDBJson(\\"MACHINE_CONFIG\\")
+    },
+    \\"update\\": {
+        \\"expression\\": \\"SET #pctn = :pctn, #stn = :stn, #suv = :suv, #sdv = :sdv, #siv = :siv\\",
+        \\"expressionNames\\": {
+            \\"#pctn\\": \\"machineProductionCountTagName\\",
+            \\"#stn\\": \\"machineStatusTagName\\",
+            \\"#suv\\": \\"machineStatusUpValue\\",
+            \\"#sdv\\": \\"machineStatusDownValue\\",
+            \\"#siv\\": \\"machineStatusIdleValue\\"
+        },
+        \\"expressionValues\\": {
+            \\":pctn\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineProductionCountTagName),
+            \\":stn\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusTagName),
+            \\":suv\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusUpValue),
+            \\":sdv\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusDownValue),
+            \\":siv\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusIdleValue)
+        }
+    },
+    \\"condition\\": {
+        \\"expression\\": \\"attribute_exists(id)\\"
+    }
+}
+",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+        "TypeName": "Mutation",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSourceQuerygetConfigItemResolverACD0D361": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiConfigDataSource75B5C805",
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "ConfigDataSource",
+        "FieldName": "getConfigItem",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    \\"version\\": \\"2018-05-29\\", 
+    \\"operation\\": \\"GetItem\\", 
+    \\"key\\": {
+        \\"id\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+        \\"type\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+    }
+}
+",
+        "ResponseMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+#if( $ctx.error )
+	$util.error(\\"An error occurred. Please double check input parameters\\", \\"InputError\\")
+#else
+	$util.toJson($ctx.result)
+#end",
+        "TypeName": "Query",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSourceQuerygetConfigItemsResolver500C322F": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiConfigDataSource75B5C805",
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "ConfigDataSource",
+        "FieldName": "getConfigItems",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "{\\"version\\" : \\"2017-02-28\\", \\"operation\\" : \\"Scan\\"}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result.items)",
+        "TypeName": "Query",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSourceServiceRole4D40DD99": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "appsync.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAppSyncApiGraphqlApiConfigDataSourceServiceRoleDefaultPolicy991D00F7": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiConfigTable191DB72A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAppSyncApiGraphqlApiConfigDataSourceServiceRoleDefaultPolicy991D00F7",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAppSyncApiGraphqlApiConfigDataSourceServiceRole4D40DD99",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAppSyncApiGraphqlApiLogRole2DBD922F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "appsync.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAppSyncApiGraphqlApiLogRoleDefaultPolicy10C394AB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":logs:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":log-group:*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAppSyncApiGraphqlApiLogRoleDefaultPolicy10C394AB",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAppSyncApiGraphqlApiLogRole2DBD922F",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAppSyncApiGraphqlApiRealTimeDataSource45A11498": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "LambdaConfig": Object {
+          "LambdaFunctionArn": Object {
+            "Fn::GetAtt": Array [
+              "FrontEndAppSyncApiRealTimeDataSourceLambda81A40F2F",
+              "Arn",
+            ],
+          },
+        },
+        "Name": "RealTimeDataSource",
+        "ServiceRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceServiceRoleF1F0E3B4",
+            "Arn",
+          ],
+        },
+        "Type": "AWS_LAMBDA",
+      },
+      "Type": "AWS::AppSync::DataSource",
+    },
+    "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceQuerygetRealTimeMachineDataResolverE053CB98": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiRealTimeDataSource45A11498",
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "RealTimeDataSource",
+        "FieldName": "getRealTimeMachineData",
+        "Kind": "UNIT",
+        "TypeName": "Query",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceServiceRoleDefaultPolicy05E8A8DD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FrontEndAppSyncApiRealTimeDataSourceLambda81A40F2F",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceServiceRoleDefaultPolicy05E8A8DD",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceServiceRoleF1F0E3B4",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAppSyncApiGraphqlApiRealTimeDataSourceServiceRoleF1F0E3B4": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "appsync.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "Definition": "# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  getConfigItems: [ConfigItem]
+  getUIReferenceItems: [UIReferenceItem]
+  getConfigItem(input: GetConfigItemInput!): ConfigItem
+  getUIReferenceItem(input: GetUIReferenceItemInput): UIReferenceItem
+  getRealTimeMachineData(id: ID!, startTimestamp: Int!, endTimestamp: Int!, incrementalRefresh: Boolean!): RealTimeDataItemConnection
+}
+
+type Mutation {
+  updateUIReferenceItem(input: UpdateUIReferenceItemInput): UIReferenceItem
+  updateMachineName(input: UpdateMachineNameInput): UIReferenceItem
+  updateMachineGrouping(input: UpdateMachineGroupingInput): UIReferenceItem
+  updateMachineConfig(input: UpdateMachineConfigInput): ConfigItem
+}
+
+type Subscription {
+  onUpdateUIReferenceItem: UIReferenceItem @aws_subscribe(mutations: [\\"updateUIReferenceItem\\", \\"updateMachineName\\", \\"updateMachineGrouping\\"])
+}
+
+type ConfigItem {
+  id: ID!
+  type: ConfigType!
+
+  msgFormatDataAliasDelimiter: String
+  msgFormatDataMessagesKeyName: String
+  msgFormatDataMessageTimestampFormat: String
+  msgFormatDataMessageTimestampKeyName: String
+  msgFormatDataMessageValueKeyName: String
+  msgFormatDataMessageAliasKeyName: String
+  msgFormatDataMessageQualityKeyName: String
+
+  uiReferenceMappingLocationKeys: String
+  uiReferenceMappingLineKeys: String
+
+  machineProductionCountTagName: String
+  machineStatusTagName: String
+  machineStatusUpValue: String
+  machineStatusDownValue: String
+  machineStatusIdleValue: String
+}
+
+type UIReferenceItem {
+  id: ID!
+  type: UIReferenceItemType!
+
+  name: String
+  machineStatus: String
+  machineStatusUpdatedTimestamp: Int
+  uiReferenceMappingLineKeys: String
+  uiReferenceMappingLocationKeys: String
+}
+
+type RealTimeDataItem {
+  id: ID!
+  messageTimestamp: Int!
+  realTimeTableTTLExpirationTimestamp: Int!
+  value: String!
+}
+
+type RealTimeDataItemChunk {
+  dataAsOfUTCUnixTimestamp: Int!
+  statusValue: String
+  productionCountValue: String!
+}
+
+type RealTimeDataItemConnection {
+  dataChunks: [RealTimeDataItemChunk]
+}
+
+input UpdateUIReferenceItemInput {
+	id: ID!
+	type: UIReferenceItemType!
+  expression: String
+  expressionNames: AWSJSON
+  expressionValues: AWSJSON
+}
+
+input UpdateMachineNameInput {
+  	id: ID!
+    name: String
+}
+
+input UpdateMachineConfigInput {
+	id: ID!
+  machineProductionCountTagName: String
+  machineStatusTagName: String
+  machineStatusUpValue: String
+  machineStatusDownValue: String
+  machineStatusIdleValue: String
+}
+
+input UpdateMachineGroupingInput {
+  uiReferenceMappingLocationKeys: String
+  uiReferenceMappingLineKeys: String
+}
+
+input AddRealTimeDataItemInput {
+  id: ID!
+  messageTimestamp: Int!
+  realTimeTableTTLExpirationTimestamp: Int!
+  value: String!
+}
+
+input GetConfigItemInput {
+  id: ID!
+  type: ConfigType!
+}
+
+input GetUIReferenceItemInput {
+  id: ID!
+  type: UIReferenceItemType!
+}
+
+enum ConfigType {
+  MESSAGE_FORMAT
+  MACHINE_CONFIG
+  UI_REFERENCE_MAPPING
+}
+
+enum UIReferenceItemType {
+  MACHINE
+  LOCATION
+  LINE
+  UI_REFERENCE_MAPPING
+}
+",
+      },
+      "Type": "AWS::AppSync::GraphQLSchema",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DynamoDBConfig": Object {
+          "AwsRegion": Object {
+            "Ref": "AWS::Region",
+          },
+          "TableName": Object {
+            "Ref": "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+          },
+        },
+        "Name": "UIReferenceDataSource",
+        "ServiceRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceServiceRoleAD440F77",
+            "Arn",
+          ],
+        },
+        "Type": "AMAZON_DYNAMODB",
+      },
+      "Type": "AWS::AppSync::DataSource",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceMutationupdateMachineGroupingResolverB9936D3C": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+        "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "UIReferenceDataSource",
+        "FieldName": "updateMachineGrouping",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    \\"version\\": \\"2018-05-29\\",
+    \\"operation\\": \\"UpdateItem\\",
+    \\"key\\" : {
+        \\"id\\" : $util.dynamodb.toDynamoDBJson(\\"DEFAULT\\"),
+        \\"type\\" : $util.dynamodb.toDynamoDBJson(\\"UI_REFERENCE_MAPPING\\")
+    },
+    \\"update\\": {
+        \\"expression\\": \\"SET #locKeys = :locKeys, #lineKeys = :lineKeys\\",
+        \\"expressionNames\\": {
+            \\"#locKeys\\": \\"uiReferenceMappingLocationKeys\\",
+            \\"#lineKeys\\": \\"uiReferenceMappingLineKeys\\"
+        },
+        \\"expressionValues\\": {
+            \\":locKeys\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.uiReferenceMappingLocationKeys),
+            \\":lineKeys\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.uiReferenceMappingLineKeys)
+        }
+    }
+}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+        "TypeName": "Mutation",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceMutationupdateMachineNameResolverDF45130A": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+        "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "UIReferenceDataSource",
+        "FieldName": "updateMachineName",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    \\"version\\": \\"2018-05-29\\",
+    \\"operation\\": \\"UpdateItem\\",
+    \\"key\\" : {
+        \\"id\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+        \\"type\\" : $util.dynamodb.toDynamoDBJson(\\"MACHINE\\")
+    },
+    \\"update\\": {
+        \\"expression\\": \\"SET #name = :name\\",
+        \\"expressionNames\\": { \\"#name\\": \\"name\\" },
+        \\"expressionValues\\": { \\":name\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.name) }
+    },
+    \\"condition\\": {
+        \\"expression\\": \\"attribute_exists(id)\\"
+    }
+}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+        "TypeName": "Mutation",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceMutationupdateUIReferenceItemResolver6EEFB110": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+        "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "UIReferenceDataSource",
+        "FieldName": "updateUIReferenceItem",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    #if ($ctx.args.input.expression)
+        \\"version\\": \\"2018-05-29\\",
+        \\"operation\\": \\"UpdateItem\\",
+        \\"key\\" : {
+            \\"id\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+            \\"type\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+        },
+        \\"update\\": {
+            \\"expression\\": \\"\${ctx.args.input.expression}\\",
+            \\"expressionNames\\": $util.toJson($ctx.args.input.expressionNames),
+            \\"expressionValues\\": $util.toJson($util.dynamodb.toMapValues($ctx.args.input.expressionValues))
+        }
+    #else
+        \\"version\\": \\"2017-02-28\\",
+        \\"operation\\": \\"PutItem\\",
+        \\"key\\" : {
+            \\"id\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+            \\"type\\" : $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+        }
+    #end
+}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+        "TypeName": "Mutation",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceQuerygetUIReferenceItemResolverED603441": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+        "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "UIReferenceDataSource",
+        "FieldName": "getUIReferenceItem",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    \\"version\\": \\"2018-05-29\\", 
+    \\"operation\\": \\"GetItem\\", 
+    \\"key\\": {
+        \\"id\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+        \\"type\\": $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+    }
+}
+",
+        "ResponseMappingTemplate": "## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+#if( $ctx.error )
+	$util.error(\\"An error occurred. Please double check input parameters\\", \\"InputError\\")
+#else
+	$util.toJson($ctx.result)
+#end",
+        "TypeName": "Query",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceQuerygetUIReferenceItemsResolver3AB386C5": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiGraphqlApiSchemaBFC90D88",
+        "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceC6F91BC7",
+      ],
+      "Properties": Object {
+        "ApiId": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "ApiId",
+          ],
+        },
+        "DataSourceName": "UIReferenceDataSource",
+        "FieldName": "getUIReferenceItems",
+        "Kind": "UNIT",
+        "RequestMappingTemplate": "{\\"version\\" : \\"2017-02-28\\", \\"operation\\" : \\"Scan\\"}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result.items)",
+        "TypeName": "Query",
+      },
+      "Type": "AWS::AppSync::Resolver",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceServiceRoleAD440F77": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "appsync.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceServiceRoleDefaultPolicyB7DEA550": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceServiceRoleDefaultPolicyB7DEA550",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAppSyncApiGraphqlApiUIReferenceDataSourceServiceRoleAD440F77",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAppSyncApiRealTimeDataSourceLambda81A40F2F": Object {
+      "DependsOn": Array [
+        "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRoleDefaultPolicy8F9CD0D7",
+        "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRole15CBFE7A",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "CloudWatch permissions are granted by the LambdaBasicExecutionRole",
+            },
+            Object {
+              "id": "W89",
+              "reason": "VPC for Lambda is not needed. This serverless architecture does not deploy a VPC.",
+            },
+            Object {
+              "id": "W92",
+              "reason": "ReservedConcurrentExecutions is not needed for this Lambda function.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3BucketPrefix",
+                  ],
+                },
+                "-",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+              ],
+            ],
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3KeyPrefix",
+                  ],
+                },
+                "/data-sources.zip",
+              ],
+            ],
+          },
+        },
+        "Description": "AppSync data source for getting machine details over a longer period of time",
+        "Environment": Object {
+          "Variables": Object {
+            "ANONYMOUS_DATA_UUID": Object {
+              "Fn::GetAtt": Array [
+                "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC",
+                "AnonymousDataUUID",
+              ],
+            },
+            "REAL_TIME_DATA_TABLE_NAME": Object {
+              "Ref": "FrontEndAppSyncApiRealTimeDataTable3DFFEA64",
+            },
+            "SEND_ANONYMOUS_DATA": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SendAnonymousData",
+              ],
+            },
+            "SOLUTION_ID": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SolutionId",
+              ],
+            },
+            "SOLUTION_VERSION": "TEST_SOLUTION_VERSION",
+          },
+        },
+        "Handler": "data-sources/machine-detail.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRole15CBFE7A",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRole15CBFE7A": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRoleDefaultPolicy8F9CD0D7": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiRealTimeDataTable3DFFEA64",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRoleDefaultPolicy8F9CD0D7",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAppSyncApiRealTimeDataSourceLambdaServiceRole15CBFE7A",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAppSyncApiRealTimeDataTable3DFFEA64": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "messageTimestamp",
+            "AttributeType": "N",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "messageTimestamp",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": Object {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": Object {
+          "SSEEnabled": true,
+        },
+        "TimeToLiveSpecification": Object {
+          "AttributeName": "realTimeTableTTLExpirationTimestamp",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FrontEndAppSyncApiUIReferenceTable8FE23E01": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "type",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "type",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": Object {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": Object {
+          "SSEEnabled": true,
+        },
+        "StreamSpecification": Object {
+          "StreamViewType": "NEW_AND_OLD_IMAGES",
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FrontEndAuthenticationDefaultUserB4B166C3": Object {
+      "Properties": Object {
+        "DesiredDeliveryMediums": Array [
+          "EMAIL",
+        ],
+        "ForceAliasCreation": true,
+        "UserAttributes": Array [
+          Object {
+            "Name": "email",
+            "Value": Object {
+              "Ref": "DefaultUserEmail",
+            },
+          },
+          Object {
+            "Name": "email_verified",
+            "Value": "true",
+          },
+        ],
+        "UserPoolId": Object {
+          "Ref": "FrontEndAuthenticationUserPoolA2898E8E",
+        },
+        "Username": Object {
+          "Ref": "DefaultUserEmail",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolUser",
+    },
+    "FrontEndAuthenticationIdentityPool8434DFB9": Object {
+      "Properties": Object {
+        "AllowUnauthenticatedIdentities": false,
+        "CognitoIdentityProviders": Array [
+          Object {
+            "ClientId": Object {
+              "Ref": "FrontEndAuthenticationUserPoolClient39A2D9A9",
+            },
+            "ProviderName": Object {
+              "Fn::GetAtt": Array [
+                "FrontEndAuthenticationUserPoolA2898E8E",
+                "ProviderName",
+              ],
+            },
+            "ServerSideTokenCheck": false,
+          },
+        ],
+        "IdentityPoolName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-identity-pool",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Cognito::IdentityPool",
+    },
+    "FrontEndAuthenticationIdentityPoolAuthenticatedRoleDefaultPolicy92456272": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "appsync:GraphQL",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":appsync:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":apis/",
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndAppSyncApiGraphqlApiBA38E575",
+                        "ApiId",
+                      ],
+                    },
+                    "/types/Query/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "appsync:GraphQL",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":appsync:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":apis/",
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndAppSyncApiGraphqlApiBA38E575",
+                        "ApiId",
+                      ],
+                    },
+                    "/types/Mutation/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "appsync:GraphQL",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":appsync:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":apis/",
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndAppSyncApiGraphqlApiBA38E575",
+                        "ApiId",
+                      ],
+                    },
+                    "/types/Subscription/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "FrontEndAuthenticationIdentityPoolAuthenticatedRoleDefaultPolicy92456272",
+        "Roles": Array [
+          Object {
+            "Ref": "FrontEndAuthenticationIdentityPoolAuthenticatedRoleEF31FEE1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FrontEndAuthenticationIdentityPoolAuthenticatedRoleEF31FEE1": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "ForAnyValue:StringLike": Object {
+                  "cognito-identity.amazonaws.com:amr": "authenticated",
+                },
+                "StringEquals": Object {
+                  "cognito-identity.amazonaws.com:aud": Object {
+                    "Ref": "FrontEndAuthenticationIdentityPool8434DFB9",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": "cognito-identity.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Description": "Identity Pool Authenticated Role for TEST_SOLUTION_DISPLAY_NAME",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "FrontEndAuthenticationIdentityPoolRoleAttachmentC119CF03": Object {
+      "Properties": Object {
+        "IdentityPoolId": Object {
+          "Ref": "FrontEndAuthenticationIdentityPool8434DFB9",
+        },
+        "Roles": Object {
+          "authenticated": Object {
+            "Fn::GetAtt": Array [
+              "FrontEndAuthenticationIdentityPoolAuthenticatedRoleEF31FEE1",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+    },
+    "FrontEndAuthenticationUserPoolA2898E8E": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccountRecoverySetting": Object {
+          "RecoveryMechanisms": Array [
+            Object {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            Object {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": Object {
+          "AllowAdminCreateUserOnly": true,
+          "InviteMessageTemplate": Object {
+            "EmailMessage": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "<p>
+            Please sign in to the TEST_SOLUTION_DISPLAY_NAME Dashboard using the temporary credentials below:<br />
+            https://",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "FrontEndHostingDistributionToS3CloudFrontDistribution6DBBF508",
+                      "DomainName",
+                    ],
+                  },
+                  "</p>
+            <p>Username: <strong>{username}</strong><br />Temporary Password: <strong>{####}</strong></p>",
+                ],
+              ],
+            },
+            "EmailSubject": "[TEST_SOLUTION_DISPLAY_NAME] - Dashboard Login Information",
+          },
+        },
+        "AutoVerifiedAttributes": Array [
+          "email",
+        ],
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "Policies": Object {
+          "PasswordPolicy": Object {
+            "MinimumLength": 12,
+            "RequireLowercase": true,
+            "RequireNumbers": true,
+            "RequireSymbols": true,
+            "RequireUppercase": true,
+          },
+        },
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "UserPoolAddOns": Object {
+          "AdvancedSecurityMode": "ENFORCED",
+        },
+        "UserPoolName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-user-pool",
+            ],
+          ],
+        },
+        "UsernameAttributes": Array [
+          "email",
+        ],
+        "VerificationMessageTemplate": Object {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "FrontEndAuthenticationUserPoolClient39A2D9A9": Object {
+      "Properties": Object {
+        "AllowedOAuthFlows": Array [
+          "implicit",
+          "code",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "profile",
+          "phone",
+          "email",
+          "openid",
+          "aws.cognito.signin.user.admin",
+        ],
+        "CallbackURLs": Array [
+          "https://example.com",
+        ],
+        "ClientName": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-user-pool-client",
+            ],
+          ],
+        },
+        "GenerateSecret": false,
+        "PreventUserExistenceErrors": "ENABLED",
+        "RefreshTokenValidity": 1440,
+        "SupportedIdentityProviders": Array [
+          "COGNITO",
+        ],
+        "TokenValidityUnits": Object {
+          "RefreshToken": "minutes",
+        },
+        "UserPoolId": Object {
+          "Ref": "FrontEndAuthenticationUserPoolA2898E8E",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "FrontEndHostingDistributionToS3CloudFrontDistribution6DBBF508": Object {
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W70",
+              "reason": "Since the distribution uses the CloudFront domain name, CloudFront automatically sets the security policy to TLSv1 regardless of the value of MinimumProtocolVersion",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "CustomErrorResponses": Array [
+            Object {
+              "ErrorCode": 403,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+            },
+            Object {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "TargetOriginId": "MyTestStackFrontEndHostingDistributionToS3CloudFrontDistributionOrigin18BBD2C74",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Logging": Object {
+            "Bucket": Object {
+              "Fn::GetAtt": Array [
+                "CommonResourcesLogBucketFC1ABCC9",
+                "RegionalDomainName",
+              ],
+            },
+            "Prefix": "hosting-cloudfront/",
+          },
+          "Origins": Array [
+            Object {
+              "DomainName": Object {
+                "Fn::GetAtt": Array [
+                  "FrontEndHostingDistributionToS3S3BucketF252EE80",
+                  "RegionalDomainName",
+                ],
+              },
+              "Id": "MyTestStackFrontEndHostingDistributionToS3CloudFrontDistributionOrigin18BBD2C74",
+              "S3OriginConfig": Object {
+                "OriginAccessIdentity": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "origin-access-identity/cloudfront/",
+                      Object {
+                        "Ref": "FrontEndHostingDistributionToS3CloudFrontDistributionOrigin1S3OriginF6683AFF",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "FrontEndHostingDistributionToS3CloudFrontDistributionOrigin1S3OriginF6683AFF": Object {
+      "Properties": Object {
+        "CloudFrontOriginAccessIdentityConfig": Object {
+          "Comment": "Identity for MyTestStackFrontEndHostingDistributionToS3CloudFrontDistributionOrigin18BBD2C74",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "FrontEndHostingDistributionToS3S3BucketF252EE80": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "CommonResourcesLogBucketFC1ABCC9",
+          },
+          "LogFilePrefix": "hosting-s3/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "FrontEndHostingDistributionToS3S3BucketPolicyE8E9218C": Object {
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "F16",
+              "reason": "Public website bucket policy requires a wildcard principal",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "FrontEndHostingDistributionToS3S3BucketF252EE80",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndHostingDistributionToS3S3BucketF252EE80",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndHostingDistributionToS3CloudFrontDistributionOrigin1S3OriginF6683AFF",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndHostingDistributionToS3S3BucketF252EE80",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "M2C2NestedStack": Object {
+      "Condition": "deployM2CCondition",
+      "Properties": Object {
+        "Parameters": Object {
+          "ExistingGreengrassGroupID": Object {
+            "Ref": "M2CExistingGreengrassGroupID",
+          },
+          "ExistingKinesisStreamName": Object {
+            "Ref": "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+          },
+        },
+        "TemplateURL": Object {
+          "Fn::If": Array [
+            "anonymousUsageCondition",
+            "https://url/machine-to-cloud-connectivity-framework.template",
+            "https://url/machine-to-cloud-connectivity-framework-metrics-off.template",
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::Stack",
+    },
+    "RealTimeProcessingAllowUpdateFilterLambdaPolicyF6E90194": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "lambda:GetFunctionConfiguration",
+                "lambda:UpdateFunctionConfiguration",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "RealTimeProcessingStreamFilterLambdaFunction5D22A976",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RealTimeProcessingAllowUpdateFilterLambdaPolicyF6E90194",
+        "Roles": Array [
+          Object {
+            "Ref": "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRole5B21A2DC",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionBABF2D7C": Object {
+      "DependsOn": Array [
+        "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRoleDefaultPolicy25E650BE",
+        "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRole5B21A2DC",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "Lambda functions has the required permission to write CloudWatch Logs. It uses custom policy instead of arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole with tighter permissions.",
+            },
+            Object {
+              "id": "W89",
+              "reason": "This is not a rule for the general case, just for specific use cases/industries",
+            },
+            Object {
+              "id": "W92",
+              "reason": "Impossible for us to define the correct concurrency for clients",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3BucketPrefix",
+                  ],
+                },
+                "-",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+              ],
+            ],
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3KeyPrefix",
+                  ],
+                },
+                "/update-filter-function.zip",
+              ],
+            ],
+          },
+        },
+        "Description": "Receives messages from the DDB Streams for the Config and UI Reference Tables. When an update is detected, update an environment variable on the Filter Kinesis Stream lambda so its container will be refreshed",
+        "Environment": Object {
+          "Variables": Object {
+            "ANONYMOUS_DATA_UUID": Object {
+              "Fn::GetAtt": Array [
+                "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC",
+                "AnonymousDataUUID",
+              ],
+            },
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "CONFIG_TABLE_STREAM_ARN": Object {
+              "Fn::GetAtt": Array [
+                "FrontEndAppSyncApiConfigTable191DB72A",
+                "StreamArn",
+              ],
+            },
+            "FILTER_FUNCTION_NAME": Object {
+              "Ref": "RealTimeProcessingStreamFilterLambdaFunction5D22A976",
+            },
+            "SEND_ANONYMOUS_DATA": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SendAnonymousData",
+              ],
+            },
+            "SOLUTION_ID": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SolutionId",
+              ],
+            },
+            "SOLUTION_VERSION": "TEST_SOLUTION_VERSION",
+            "UI_REFERENCE_TABLE_STREAM_ARN": Object {
+              "Fn::GetAtt": Array [
+                "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                "StreamArn",
+              ],
+            },
+          },
+        },
+        "Handler": "update-filter-function/index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRole5B21A2DC",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+        "TracingConfig": Object {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionDynamoDBEventSourceMyTestStackFrontEndAppSyncApiConfigTable4CD3DAABA485DCFA": Object {
+      "Properties": Object {
+        "BatchSize": 100,
+        "BisectBatchOnFunctionError": true,
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiConfigTable191DB72A",
+            "StreamArn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionBABF2D7C",
+        },
+        "MaximumRecordAgeInSeconds": 86400,
+        "MaximumRetryAttempts": 500,
+        "StartingPosition": "TRIM_HORIZON",
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionDynamoDBEventSourceMyTestStackFrontEndAppSyncApiUIReferenceTableC53653819DF494A2": Object {
+      "Properties": Object {
+        "BatchSize": 100,
+        "BisectBatchOnFunctionError": true,
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+            "StreamArn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionBABF2D7C",
+        },
+        "MaximumRecordAgeInSeconds": 86400,
+        "MaximumRetryAttempts": 500,
+        "StartingPosition": "TRIM_HORIZON",
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRole5B21A2DC": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":logs:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":log-group:/aws/lambda/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "LambdaFunctionServiceRolePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRoleDefaultPolicy25E650BE": Object {
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W12",
+              "reason": "Lambda needs the following minimum required permissions to send trace data to X-Ray and access ENIs in a VPC.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "dynamodb:ListStreams",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FrontEndAppSyncApiConfigTable191DB72A",
+                  "StreamArn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                  "StreamArn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRoleDefaultPolicy25E650BE",
+        "Roles": Array [
+          Object {
+            "Ref": "RealTimeProcessingConfigStreamToUpdateLambdaLambdaFunctionServiceRole5B21A2DC",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RealTimeProcessingKinesisStreamsRole128BC168": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "firehose.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "kinesis:DescribeStream",
+                    "kinesis:GetShardIterator",
+                    "kinesis:GetRecords",
+                    "kinesis:ListShards",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::GetAtt": Array [
+                      "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+                      "Arn",
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "KinesisStreamsRoleRolePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RealTimeProcessingStreamFilterKinesisStreamGetRecordsIteratorAgeAlarm07E3E187": Object {
+      "Properties": Object {
+        "AlarmDescription": "Consumer Record Processing Falling Behind, there is risk for data loss due to record expiration.",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "GetRecords.IteratorAgeMilliseconds",
+        "Namespace": "AWS/Kinesis",
+        "Period": 300,
+        "Statistic": "Maximum",
+        "Threshold": 2592000,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "RealTimeProcessingStreamFilterKinesisStreamReadProvisionedThroughputExceededAlarm3ED08ED6": Object {
+      "Properties": Object {
+        "AlarmDescription": "Consumer Application is Reading at a Slower Rate Than Expected.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "ReadProvisionedThroughputExceeded",
+        "Namespace": "AWS/Kinesis",
+        "Period": 300,
+        "Statistic": "Average",
+        "Threshold": 0,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "RealTimeProcessingStreamFilterLambdaFunction5D22A976": Object {
+      "DependsOn": Array [
+        "RealTimeProcessingStreamFilterLambdaFunctionServiceRoleDefaultPolicy5179C7ED",
+        "RealTimeProcessingStreamFilterLambdaFunctionServiceRole615DF2B6",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "Lambda functions has the required permission to write CloudWatch Logs. It uses custom policy instead of arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole with tighter permissions.",
+            },
+            Object {
+              "id": "W89",
+              "reason": "This is not a rule for the general case, just for specific use cases/industries",
+            },
+            Object {
+              "id": "W92",
+              "reason": "Impossible for us to define the correct concurrency for clients",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3BucketPrefix",
+                  ],
+                },
+                "-",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+              ],
+            ],
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3KeyPrefix",
+                  ],
+                },
+                "/filter-kinesis-stream.zip",
+              ],
+            ],
+          },
+        },
+        "Description": "Filters messages from the Kinesis Stream. Forwards status and production count updates to the real-time data table",
+        "Environment": Object {
+          "Variables": Object {
+            "ANONYMOUS_DATA_UUID": Object {
+              "Fn::GetAtt": Array [
+                "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC",
+                "AnonymousDataUUID",
+              ],
+            },
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "CONFIG_TABLE_NAME": Object {
+              "Ref": "FrontEndAppSyncApiConfigTable191DB72A",
+            },
+            "GRAPHQL_API_ENDPOINT": Object {
+              "Fn::GetAtt": Array [
+                "FrontEndAppSyncApiGraphqlApiBA38E575",
+                "GraphQLUrl",
+              ],
+            },
+            "REAL_TIME_DATA_EXPIRATION_IN_HOURS": "24",
+            "REAL_TIME_TABLE_NAME": Object {
+              "Ref": "FrontEndAppSyncApiRealTimeDataTable3DFFEA64",
+            },
+            "SEND_ANONYMOUS_DATA": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SendAnonymousData",
+              ],
+            },
+            "SOLUTION_ID": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SolutionId",
+              ],
+            },
+            "SOLUTION_VERSION": "TEST_SOLUTION_VERSION",
+            "UI_REFERENCE_TABLE_NAME": Object {
+              "Ref": "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+            },
+            "VERBOSE_LOGGING": "No",
+          },
+        },
+        "Handler": "filter-kinesis-stream/index.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "RealTimeProcessingStreamFilterLambdaFunctionServiceRole615DF2B6",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+        "TracingConfig": Object {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "RealTimeProcessingStreamFilterLambdaFunctionKinesisEventSourceMyTestStackRealTimeProcessingStreamFirehoseS3KinesisStreamFC23C86AEC6E4473": Object {
+      "Properties": Object {
+        "BatchSize": 100,
+        "BisectBatchOnFunctionError": true,
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "RealTimeProcessingStreamFilterLambdaFunction5D22A976",
+        },
+        "MaximumRecordAgeInSeconds": 86400,
+        "MaximumRetryAttempts": 500,
+        "StartingPosition": "TRIM_HORIZON",
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+    "RealTimeProcessingStreamFilterLambdaFunctionServiceRole615DF2B6": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:",
+                        Object {
+                          "Ref": "AWS::Partition",
+                        },
+                        ":logs:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":log-group:/aws/lambda/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "LambdaFunctionServiceRolePolicy",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RealTimeProcessingStreamFilterLambdaFunctionServiceRoleDefaultPolicy5179C7ED": Object {
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W76",
+              "reason": "SPCM for IAM policy document is higher than 25: Permissions are required",
+            },
+            Object {
+              "id": "W12",
+              "reason": "* permission is needed for X-Ray",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "kinesis:DescribeStreamSummary",
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:ListShards",
+                "kinesis:SubscribeToShard",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "kinesis:DescribeStream",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "appsync:GraphQL",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":appsync:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":apis/",
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndAppSyncApiGraphqlApiBA38E575",
+                        "ApiId",
+                      ],
+                    },
+                    "/types/Mutation/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiConfigTable191DB72A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiConfigTable191DB72A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiRealTimeDataTable3DFFEA64",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RealTimeProcessingStreamFilterLambdaFunctionServiceRoleDefaultPolicy5179C7ED",
+        "Roles": Array [
+          Object {
+            "Ref": "RealTimeProcessingStreamFilterLambdaFunctionServiceRole615DF2B6",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehoseF3810A7F": Object {
+      "Properties": Object {
+        "DeliveryStreamType": "KinesisStreamAsSource",
+        "ExtendedS3DestinationConfiguration": Object {
+          "BucketARN": Object {
+            "Fn::GetAtt": Array [
+              "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+              "Arn",
+            ],
+          },
+          "BufferingHints": Object {
+            "IntervalInSeconds": 300,
+            "SizeInMBs": 5,
+          },
+          "CloudWatchLoggingOptions": Object {
+            "Enabled": true,
+            "LogGroupName": Object {
+              "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroup02057BA9",
+            },
+            "LogStreamName": Object {
+              "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroupfirehoselogstreamC7188736",
+            },
+          },
+          "CompressionFormat": "GZIP",
+          "EncryptionConfiguration": Object {
+            "KMSEncryptionConfig": Object {
+              "AWSKMSKeyARN": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kms:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":alias/aws/s3",
+                  ],
+                ],
+              },
+            },
+          },
+          "RoleARN": Object {
+            "Fn::GetAtt": Array [
+              "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehoseRole4BFAD5DD",
+              "Arn",
+            ],
+          },
+        },
+        "KinesisStreamSourceConfiguration": Object {
+          "KinesisStreamARN": Object {
+            "Fn::GetAtt": Array [
+              "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0",
+              "Arn",
+            ],
+          },
+          "RoleARN": Object {
+            "Fn::GetAtt": Array [
+              "RealTimeProcessingKinesisStreamsRole128BC168",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::KinesisFirehose::DeliveryStream",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehosePolicyD21AB0D6": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "logs:PutLogEvents",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":logs:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":log-group:",
+                    Object {
+                      "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroup02057BA9",
+                    },
+                    ":log-stream:",
+                    Object {
+                      "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroupfirehoselogstreamC7188736",
+                    },
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehosePolicyD21AB0D6",
+        "Roles": Array [
+          Object {
+            "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehoseRole4BFAD5DD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3KinesisFirehoseRole4BFAD5DD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "firehose.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "CommonResourcesLogBucketFC1ABCC9",
+          },
+          "LogFilePrefix": "data/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketPolicy0FBA981D": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3S3BucketDF0A1824",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroup02057BA9": Object {
+      "DeletionPolicy": "Retain",
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W86",
+              "reason": "Retention period for CloudWatchLogs LogGroups are set to 'Never Expire' to preserve customer data indefinitely",
+            },
+            Object {
+              "id": "W84",
+              "reason": "By default CloudWatchLogs LogGroups data is encrypted using the CloudWatch server-side encryption keys (AWS Managed Keys)",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroupfirehoselogstreamC7188736": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "LogGroupName": Object {
+          "Ref": "RealTimeProcessingStreamFirehoseS3KinesisFirehoseToS3firehoseloggroup02057BA9",
+        },
+      },
+      "Type": "AWS::Logs::LogStream",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisStreamA98404A0": Object {
+      "Properties": Object {
+        "RetentionPeriodHours": 24,
+        "ShardCount": 1,
+        "StreamEncryption": Object {
+          "EncryptionType": "KMS",
+          "KeyId": "alias/aws/kinesis",
+        },
+      },
+      "Type": "AWS::Kinesis::Stream",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisStreamGetRecordsIteratorAgeAlarmF118A210": Object {
+      "Properties": Object {
+        "AlarmDescription": "Consumer Record Processing Falling Behind, there is risk for data loss due to record expiration.",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "GetRecords.IteratorAgeMilliseconds",
+        "Namespace": "AWS/Kinesis",
+        "Period": 300,
+        "Statistic": "Maximum",
+        "Threshold": 2592000,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "RealTimeProcessingStreamFirehoseS3KinesisStreamReadProvisionedThroughputExceededAlarmE4E1E137": Object {
+      "Properties": Object {
+        "AlarmDescription": "Consumer Application is Reading at a Slower Rate Than Expected.",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": 1,
+        "MetricName": "ReadProvisionedThroughputExceeded",
+        "Namespace": "AWS/Kinesis",
+        "Period": 300,
+        "Statistic": "Average",
+        "Threshold": 0,
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "SolutionHelperConfigureMachineDataCustomResourceBB417E35": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Action": "CONFIGURE_MACHINE_DATA",
+        "ConfigId": "DEFAULT",
+        "ConfigTableName": Object {
+          "Ref": "FrontEndAppSyncApiConfigTable191DB72A",
+        },
+        "MessageFormat": Object {
+          "msgFormatDataAliasDelimiter": "/",
+          "msgFormatDataMessageAliasKeyName": "name",
+          "msgFormatDataMessageQualityKeyName": "quality",
+          "msgFormatDataMessageTimestampFormat": "YYYY-MM-DD HH:mm:ss.SSSSSSZZ",
+          "msgFormatDataMessageTimestampKeyName": "timestamp",
+          "msgFormatDataMessageValueKeyName": "value",
+          "msgFormatDataMessagesKeyName": "messages",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambda6F46857E",
+            "Arn",
+          ],
+        },
+        "UIReferenceMapping": Object {
+          "uiReferenceMappingLineKeys": "2",
+          "uiReferenceMappingLocationKeys": "0/1",
+        },
+        "UIReferenceTableName": Object {
+          "Ref": "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "SolutionHelperCopyAssetsCustomResource2277E548": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Action": "CONFIGURE_UI",
+        "ApiEndpoint": Object {
+          "Fn::GetAtt": Array [
+            "FrontEndAppSyncApiGraphqlApiBA38E575",
+            "GraphQLUrl",
+          ],
+        },
+        "DestinationBucket": Object {
+          "Ref": "FrontEndHostingDistributionToS3S3BucketF252EE80",
+        },
+        "IdentityPoolId": Object {
+          "Ref": "FrontEndAuthenticationIdentityPool8434DFB9",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambda6F46857E",
+            "Arn",
+          ],
+        },
+        "SrcBucket": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Fn::FindInMap": Array [
+                  "Solution",
+                  "Config",
+                  "S3BucketPrefix",
+                ],
+              },
+              "-",
+              Object {
+                "Ref": "AWS::Region",
+              },
+            ],
+          ],
+        },
+        "SrcPath": Object {
+          "Fn::FindInMap": Array [
+            "Solution",
+            "Config",
+            "S3KeyPrefix",
+          ],
+        },
+        "UserPoolClientId": Object {
+          "Ref": "FrontEndAuthenticationUserPoolClient39A2D9A9",
+        },
+        "UserPoolId": Object {
+          "Ref": "FrontEndAuthenticationUserPoolA2898E8E",
+        },
+        "WebUIConfigFileName": "web-ui-config.js",
+        "WebUIManifestFileName": "web-ui-manifest.json",
+        "WebUIStaticFileNamePrefix": "web-ui/",
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "SolutionHelperCustomResourceLambda6F46857E": Object {
+      "DependsOn": Array [
+        "SolutionHelperCustomResourceLambdaServiceRoleDefaultPolicyC4A0AF2B",
+        "SolutionHelperCustomResourceLambdaServiceRole78D26509",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "CloudWatch permissions are granted by the LambdaBasicExecutionRole",
+            },
+            Object {
+              "id": "W89",
+              "reason": "VPC for Lambda is not needed. This serverless architecture does not deploy a VPC.",
+            },
+            Object {
+              "id": "W92",
+              "reason": "ReservedConcurrentExecutions is not needed for this Lambda function.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3BucketPrefix",
+                  ],
+                },
+                "-",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+              ],
+            ],
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3KeyPrefix",
+                  ],
+                },
+                "/solution-helper.zip",
+              ],
+            ],
+          },
+        },
+        "Description": "Performs various Solution lifecycle actions when invoked as a CloudFormation Custom Resource",
+        "Environment": Object {
+          "Variables": Object {
+            "ANONYMOUS_DATA_UUID": Object {
+              "Fn::GetAtt": Array [
+                "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC",
+                "AnonymousDataUUID",
+              ],
+            },
+            "SEND_ANONYMOUS_DATA": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SendAnonymousData",
+              ],
+            },
+            "SOLUTION_ID": Object {
+              "Fn::FindInMap": Array [
+                "Solution",
+                "Config",
+                "SolutionId",
+              ],
+            },
+            "SOLUTION_VERSION": "TEST_SOLUTION_VERSION",
+          },
+        },
+        "Handler": "solution-helper/index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambdaServiceRole78D26509",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 120,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SolutionHelperCustomResourceLambdaServiceRole78D26509": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SolutionHelperCustomResourceLambdaServiceRoleDefaultPolicyC4A0AF2B": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Fn::FindInMap": Array [
+                          "Solution",
+                          "Config",
+                          "S3BucketPrefix",
+                        ],
+                      },
+                      "-",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::",
+                      Object {
+                        "Fn::FindInMap": Array [
+                          "Solution",
+                          "Config",
+                          "S3BucketPrefix",
+                        ],
+                      },
+                      "-",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      "/",
+                      Object {
+                        "Fn::FindInMap": Array [
+                          "Solution",
+                          "Config",
+                          "S3KeyPrefix",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "FrontEndHostingDistributionToS3S3BucketF252EE80",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiConfigTable191DB72A",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "FrontEndAppSyncApiUIReferenceTable8FE23E01",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SolutionHelperCustomResourceLambdaServiceRoleDefaultPolicyC4A0AF2B",
+        "Roles": Array [
+          Object {
+            "Ref": "SolutionHelperCustomResourceLambdaServiceRole78D26509",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "SolutionHelperGenerateSolutionConstantsCustomResource7DC7C4CC": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Action": "GENERATE_SOLUTION_CONSTANTS",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperGenerateSolutionConstantsLambdaFCFAB4E5",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "SolutionHelperGenerateSolutionConstantsLambdaFCFAB4E5": Object {
+      "DependsOn": Array [
+        "SolutionHelperGenerateSolutionConstantsLambdaServiceRole65B61C4F",
+      ],
+      "Metadata": Object {
+        "cfn_nag": Object {
+          "rules_to_suppress": Array [
+            Object {
+              "id": "W58",
+              "reason": "CloudWatch permissions are granted by the LambdaBasicExecutionRole",
+            },
+            Object {
+              "id": "W89",
+              "reason": "VPC for Lambda is not needed. This serverless architecture does not deploy a VPC.",
+            },
+            Object {
+              "id": "W92",
+              "reason": "ReservedConcurrentExecutions is not needed for this Lambda function.",
+            },
+          ],
+        },
+      },
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3BucketPrefix",
+                  ],
+                },
+                "-",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+              ],
+            ],
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::FindInMap": Array [
+                    "Solution",
+                    "Config",
+                    "S3KeyPrefix",
+                  ],
+                },
+                "/solution-helper.zip",
+              ],
+            ],
+          },
+        },
+        "Description": "Generates an anonymous UUID and a lower case stack name for sending metrics and resource creation",
+        "Environment": Object {
+          "Variables": Object {
+            "STACK_NAME": Object {
+              "Ref": "AWS::StackName",
+            },
+          },
+        },
+        "Handler": "solution-helper/index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperGenerateSolutionConstantsLambdaServiceRole65B61C4F",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 3,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SolutionHelperGenerateSolutionConstantsLambdaServiceRole65B61C4F": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SolutionHelperSolutionLifecycleMetricCustomResource25D3100A": Object {
+      "Condition": "anonymousUsageCondition",
+      "Properties": Object {
+        "Action": "SOLUTION_LIFECYCLE",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "SolutionHelperCustomResourceLambda6F46857E",
+            "Arn",
+          ],
+        },
+        "SolutionParameters": Object {
+          "DeployM2C": Object {
+            "Ref": "DeployM2C",
+          },
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+    },
+  },
+}
+`;

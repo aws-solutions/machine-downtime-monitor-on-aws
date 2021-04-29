@@ -1,0 +1,23 @@
+# compiled output
+deployment/global-s3-assets
+deployment/regional-s3-assets
+deployment/open-source
+deployment/create-stack.sh
+source/**/dist
+
+# dependencies
+**/node_modules
+
+# test assets
+**/coverage
+
+# misc
+**/npm-debug.log
+**/testem.log
+**/package-lock.json
+**/.vscode/settings.json
+
+# System Files
+**/.DS_Store
+**/.vscode
+source/test

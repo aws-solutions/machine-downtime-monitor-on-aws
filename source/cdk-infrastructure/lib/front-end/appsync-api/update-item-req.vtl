@@ -1,0 +1,25 @@
+## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    #if ($ctx.args.input.expression)
+        "version": "2018-05-29",
+        "operation": "UpdateItem",
+        "key" : {
+            "id" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+            "type" : $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+        },
+        "update": {
+            "expression": "${ctx.args.input.expression}",
+            "expressionNames": $util.toJson($ctx.args.input.expressionNames),
+            "expressionValues": $util.toJson($util.dynamodb.toMapValues($ctx.args.input.expressionValues))
+        }
+    #else
+        "version": "2017-02-28",
+        "operation": "PutItem",
+        "key" : {
+            "id" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+            "type" : $util.dynamodb.toDynamoDBJson($ctx.args.input.type)
+        }
+    #end
+}

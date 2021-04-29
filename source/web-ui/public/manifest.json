@@ -1,0 +1,9 @@
+{
+  "short_name": "MDM on AWS",
+  "name": "Machine Downtime Monitor on AWS",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

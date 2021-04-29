@@ -1,0 +1,1711 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BI reporting snapshot and variables 1`] = `
+Object {
+  "Conditions": Object {
+    "TestBIReportingQuickSightCondition62549ABE": Object {
+      "Fn::Not": Array [
+        Object {
+          "Fn::Equals": Array [
+            "test-quicksight-principal-arn",
+            "",
+          ],
+        },
+      ],
+    },
+  },
+  "Resources": Object {
+    "TestBIReportingEtlGlueCommonPolicy58B49489": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                        "Arn",
+                      ],
+                    },
+                    "/glue-job-scripts/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":logs:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":log-group:/aws-glue/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlGlueCommonPolicy58B49489",
+        "Roles": Array [
+          Object {
+            "Ref": "TestBIReportingEtlGlueConfigurationJobRoleFEE08F18",
+          },
+          Object {
+            "Ref": "TestBIReportingEtlGlueConvertParquetJobRole531DE208",
+          },
+          Object {
+            "Ref": "TestBIReportingEtlGlueUpdateCrawlerJobRole457229B9",
+          },
+          Object {
+            "Ref": "TestBIReportingEtlGlueCrawlerRole6E1E2AD5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingEtlGlueConfigurationJobD10F1EDB": Object {
+      "DependsOn": Array [
+        "TestBIReportingEtlGlueCustomResource83B5E650",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                },
+                "/glue-job-scripts/configuration.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--config_table": Object {
+            "Ref": "TestConfigTable31B6F7EE",
+          },
+          "--csv_prefix": "csv",
+          "--machine_config_information_csv": "machine_config_information.csv",
+          "--machine_config_information_manifest": "machine_config_information_manifest.json",
+          "--machine_information_csv": "machine_information.csv",
+          "--machine_information_manifest": "machine_information_manifest.json",
+          "--manifest_prefix": "manifest",
+          "--output_bucket": Object {
+            "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+          },
+          "--ui_reference_table": Object {
+            "Ref": "TestUiReferenceTableAC519002",
+          },
+          "--user_agent_extra": "{\\"user_agent_extra\\": \\"AwsSolution/TestSolution/beta\\"}",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue configuration job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "TestBIReportingEtlGlueConfigurationJobRoleFEE08F18",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "TestBIReportingEtlGlueConfigurationJobRoleDefaultPolicy8E7C95DD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "TestConfigTable31B6F7EE",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "TestUiReferenceTableAC519002",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                          "Arn",
+                        ],
+                      },
+                      "/csv/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                          "Arn",
+                        ],
+                      },
+                      "/manifest/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlGlueConfigurationJobRoleDefaultPolicy8E7C95DD",
+        "Roles": Array [
+          Object {
+            "Ref": "TestBIReportingEtlGlueConfigurationJobRoleFEE08F18",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingEtlGlueConfigurationJobRoleFEE08F18": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestBIReportingEtlGlueConfigurationJobTrigger635C0C51": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "TestBIReportingEtlGlueConfigurationJobD10F1EDB",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue configuration job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-ConfigurationJobTrigger",
+            ],
+          ],
+        },
+        "Schedule": "cron(0 1 * * ? *)",
+        "StartOnCreation": true,
+        "Type": "SCHEDULED",
+        "WorkflowName": Object {
+          "Ref": "TestBIReportingEtlGlueWorkflow3EC9A272",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "TestBIReportingEtlGlueConvertParquetJob8F1B4A2C": Object {
+      "DependsOn": Array [
+        "TestBIReportingEtlGlueCustomResource83B5E650",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                },
+                "/glue-job-scripts/convert_parquet.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--config_table": Object {
+            "Ref": "TestConfigTable31B6F7EE",
+          },
+          "--input_bucket": "test-raw-data-bucket",
+          "--output_bucket": Object {
+            "Ref": "TestBIReportingEtlParquetS3Bucket5390A2C5",
+          },
+          "--user_agent_extra": "{\\"user_agent_extra\\": \\"AwsSolution/TestSolution/beta\\"}",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue parquet conversion job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "TestBIReportingEtlGlueConvertParquetJobRole531DE208",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "TestBIReportingEtlGlueConvertParquetJobRole531DE208": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestBIReportingEtlGlueConvertParquetJobRoleDefaultPolicy5843DF04": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "dynamodb:GetItem",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TestConfigTable31B6F7EE",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::test-raw-data-bucket",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::GetAtt": Array [
+                    "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::test-raw-data-bucket/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:DeleteObject",
+                "s3:PutObject",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlGlueConvertParquetJobRoleDefaultPolicy5843DF04",
+        "Roles": Array [
+          Object {
+            "Ref": "TestBIReportingEtlGlueConvertParquetJobRole531DE208",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingEtlGlueConvertParquetJobTriggerB801A4A0": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "TestBIReportingEtlGlueConvertParquetJob8F1B4A2C",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue parquet conversion job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-ConvertParquetJobTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "JobName": Object {
+                "Ref": "TestBIReportingEtlGlueConfigurationJobD10F1EDB",
+              },
+              "LogicalOperator": "EQUALS",
+              "State": "SUCCEEDED",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "TestBIReportingEtlGlueWorkflow3EC9A272",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "TestBIReportingEtlGlueCrawler612E9124": Object {
+      "Properties": Object {
+        "DatabaseName": Object {
+          "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestBIReportingEtlGlueCrawlerRole6E1E2AD5",
+            "Arn",
+          ],
+        },
+        "SchemaChangePolicy": Object {
+          "DeleteBehavior": "LOG",
+          "UpdateBehavior": "UPDATE_IN_DATABASE",
+        },
+        "Targets": Object {
+          "S3Targets": Array [
+            Object {
+              "Path": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "s3://",
+                    Object {
+                      "Ref": "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                    },
+                    "/",
+                  ],
+                ],
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Crawler",
+    },
+    "TestBIReportingEtlGlueCrawlerRole6E1E2AD5": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestBIReportingEtlGlueCrawlerRoleDefaultPolicyBCCCB4CC": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "glue:GetDatabase",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":catalog",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":database/",
+                      Object {
+                        "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+                      },
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "glue:GetTable",
+                "glue:CreateTable",
+                "glue:UpdateTable",
+                "glue:BatchGetPartition",
+                "glue:BatchCreatePartition",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":catalog",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":database/",
+                      Object {
+                        "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+                      },
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":glue:",
+                      Object {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":table/",
+                      Object {
+                        "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlGlueCrawlerRoleDefaultPolicyBCCCB4CC",
+        "Roles": Array [
+          Object {
+            "Ref": "TestBIReportingEtlGlueCrawlerRole6E1E2AD5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingEtlGlueCrawlerTrigger2AA1A42E": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "CrawlerName": Object {
+              "Ref": "TestBIReportingEtlGlueCrawler612E9124",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-CrawlerTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "JobName": Object {
+                "Ref": "TestBIReportingEtlGlueConvertParquetJob8F1B4A2C",
+              },
+              "LogicalOperator": "EQUALS",
+              "State": "SUCCEEDED",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "TestBIReportingEtlGlueWorkflow3EC9A272",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "TestBIReportingEtlGlueCustomResource83B5E650": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "TestBIReportingEtlSolutionHelperEtlPolicyA8426FFE",
+      ],
+      "Properties": Object {
+        "Action": "CONFIGURE_ETL",
+        "CsvPrefix": "csv",
+        "DestinationBucket": Object {
+          "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+        },
+        "GlueJobScripts": Array [
+          "configuration.py",
+          "convert_parquet.py",
+          "update_crawler.py",
+        ],
+        "GlueJobScriptsPrefix": "glue-job-scripts",
+        "MachineConfigInformationPrefix": "machine_config_information",
+        "MachineInformationPrefix": "machine_information",
+        "ManifestPrefix": "manifest",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperFunction4CFAB303",
+            "Arn",
+          ],
+        },
+        "SourceBucket": "test-source-bucket",
+        "SourcePrefix": "test-code-prefix",
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestBIReportingEtlGlueDatabaseF88209E2": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseInput": Object {
+          "Name": "test-stack-name-database",
+        },
+      },
+      "Type": "AWS::Glue::Database",
+    },
+    "TestBIReportingEtlGlueTableE10EAA08": Object {
+      "Properties": Object {
+        "CatalogId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "DatabaseName": Object {
+          "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+        },
+        "TableInput": Object {
+          "Description": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "Table for ",
+                Object {
+                  "Ref": "AWS::StackName",
+                },
+                " CloudFormation stack",
+              ],
+            ],
+          },
+          "Name": Object {
+            "Fn::Join": Array [
+              "_",
+              Object {
+                "Fn::Split": Array [
+                  "-",
+                  Object {
+                    "Ref": "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                  },
+                ],
+              },
+            ],
+          },
+          "Parameters": Object {
+            "classification": "parquet",
+            "has_encrypted_data": false,
+          },
+          "PartitionKeys": Array [
+            Object {
+              "Comment": "Year",
+              "Name": "Partition_0",
+              "Type": "string",
+            },
+            Object {
+              "Comment": "Month",
+              "Name": "Partition_1",
+              "Type": "string",
+            },
+            Object {
+              "Comment": "Day",
+              "Name": "Partition_2",
+              "Type": "string",
+            },
+          ],
+          "StorageDescriptor": Object {
+            "Columns": Array [
+              Object {
+                "Name": "quality",
+                "Type": "string",
+              },
+              Object {
+                "Name": "value",
+                "Type": "string",
+              },
+              Object {
+                "Name": "timestamp",
+                "Type": "string",
+              },
+              Object {
+                "Name": "tag",
+                "Type": "string",
+              },
+              Object {
+                "Name": "id",
+                "Type": "string",
+              },
+            ],
+            "Compressed": false,
+            "InputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+            "Location": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "s3://",
+                  Object {
+                    "Ref": "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                  },
+                  "/",
+                ],
+              ],
+            },
+            "OutputFormat": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+            "SerdeInfo": Object {
+              "SerializationLibrary": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe",
+            },
+            "StoredAsSubDirectories": false,
+          },
+          "TableType": "EXTERNAL_TABLE",
+        },
+      },
+      "Type": "AWS::Glue::Table",
+    },
+    "TestBIReportingEtlGlueUpdateCrawlerJob9E5EACC0": Object {
+      "DependsOn": Array [
+        "TestBIReportingEtlGlueCustomResource83B5E650",
+      ],
+      "Properties": Object {
+        "Command": Object {
+          "Name": "glueetl",
+          "PythonVersion": "3",
+          "ScriptLocation": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "s3://",
+                Object {
+                  "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                },
+                "/glue-job-scripts/update_crawler.py",
+              ],
+            ],
+          },
+        },
+        "DefaultArguments": Object {
+          "--additional-python-modules": "botocore>=1.20.12,boto3>=1.17.12",
+          "--glue_crawler": Object {
+            "Ref": "TestBIReportingEtlGlueCrawler612E9124",
+          },
+          "--glue_trigger": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Ref": "AWS::StackName",
+                },
+                "-UpdateCrawlerJobTrigger",
+              ],
+            ],
+          },
+          "--user_agent_extra": "{\\"user_agent_extra\\": \\"AwsSolution/TestSolution/beta\\"}",
+        },
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler update job for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "GlueVersion": "2.0",
+        "Role": Object {
+          "Ref": "TestBIReportingEtlGlueUpdateCrawlerJobRole457229B9",
+        },
+      },
+      "Type": "AWS::Glue::Job",
+    },
+    "TestBIReportingEtlGlueUpdateCrawlerJobRole457229B9": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "glue.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Path": "/service-role/",
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestBIReportingEtlGlueUpdateCrawlerJobRoleDefaultPolicy9B7FB53A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "glue:UpdateCrawler",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":glue:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":crawler/",
+                    Object {
+                      "Ref": "TestBIReportingEtlGlueCrawler612E9124",
+                    },
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "glue:StopTrigger",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":glue:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":trigger/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "-UpdateCrawlerJobTrigger",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlGlueUpdateCrawlerJobRoleDefaultPolicy9B7FB53A",
+        "Roles": Array [
+          Object {
+            "Ref": "TestBIReportingEtlGlueUpdateCrawlerJobRole457229B9",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingEtlGlueUpdateCrawlerJobTrigger44BCF2F9": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "JobName": Object {
+              "Ref": "TestBIReportingEtlGlueUpdateCrawlerJob9E5EACC0",
+            },
+          },
+        ],
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Glue crawler update job scheduled trigger for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              "-UpdateCrawlerJobTrigger",
+            ],
+          ],
+        },
+        "Predicate": Object {
+          "Conditions": Array [
+            Object {
+              "CrawlState": "SUCCEEDED",
+              "CrawlerName": Object {
+                "Ref": "TestBIReportingEtlGlueCrawler612E9124",
+              },
+              "LogicalOperator": "EQUALS",
+            },
+          ],
+        },
+        "StartOnCreation": true,
+        "Type": "CONDITIONAL",
+        "WorkflowName": Object {
+          "Ref": "TestBIReportingEtlGlueWorkflow3EC9A272",
+        },
+      },
+      "Type": "AWS::Glue::Trigger",
+    },
+    "TestBIReportingEtlGlueWorkflow3EC9A272": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Workflow for ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+              " CloudFormation stack",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Glue::Workflow",
+    },
+    "TestBIReportingEtlMetadataS3BucketD37BBB46": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "TestLoggingBucket077C0B0B",
+          },
+          "LogFilePrefix": "metadata/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestBIReportingEtlMetadataS3BucketPolicy9E27CA53": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "TestBIReportingEtlParquetS3Bucket5390A2C5": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionTransitions": Array [
+                Object {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90,
+                },
+              ],
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "LoggingConfiguration": Object {
+          "DestinationBucketName": Object {
+            "Ref": "TestLoggingBucket077C0B0B",
+          },
+          "LogFilePrefix": "parquet/",
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestBIReportingEtlParquetS3BucketPolicy08381213": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "TestBIReportingEtlParquetS3Bucket5390A2C5",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "*",
+              "Condition": Object {
+                "Bool": Object {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "TestBIReportingEtlParquetS3Bucket5390A2C5",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+              "Sid": "HttpsOnly",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "TestBIReportingEtlSolutionHelperEtlPolicyA8426FFE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::test-source-bucket/*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                          "Arn",
+                        ],
+                      },
+                      "/csv/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                          "Arn",
+                        ],
+                      },
+                      "/manifest/*",
+                    ],
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "TestBIReportingEtlMetadataS3BucketD37BBB46",
+                          "Arn",
+                        ],
+                      },
+                      "/glue-job-scripts/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingEtlSolutionHelperEtlPolicyA8426FFE",
+        "Roles": Array [
+          Object {
+            "Ref": "TestSolutionHelperFunctionServiceRole7B84FD28",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestBIReportingQuickSightQuickSightCustomResource3BD896FC": Object {
+      "Condition": "TestBIReportingQuickSightCondition62549ABE",
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "TestBIReportingEtlGlueCustomResource83B5E650",
+        "TestBIReportingQuickSightSolutionHelperQuickSightPolicy59515C9D",
+      ],
+      "Properties": Object {
+        "AccountId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "Action": "CREATE_QUICKSIGHT",
+        "GlueDatabaseName": Object {
+          "Ref": "TestBIReportingEtlGlueDatabaseF88209E2",
+        },
+        "GlueTableName": Object {
+          "Ref": "TestBIReportingEtlGlueTableE10EAA08",
+        },
+        "Metadata": Object {
+          "BucketName": Object {
+            "Ref": "TestBIReportingEtlMetadataS3BucketD37BBB46",
+          },
+          "MachineConfigInformationPrefix": "machine_config_information",
+          "MachineInformationPrefix": "machine_information",
+          "ManifestPrefix": "manifest",
+        },
+        "PrincipalArn": "test-quicksight-principal-arn",
+        "QuickSightTemplate": "test-quicksight-template",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperFunction4CFAB303",
+            "Arn",
+          ],
+        },
+        "StackName": Object {
+          "Ref": "AWS::StackName",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestBIReportingQuickSightSolutionHelperQuickSightPolicy59515C9D": Object {
+      "Condition": "TestBIReportingQuickSightCondition62549ABE",
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSource",
+                "quicksight:DeleteDataSource",
+                "quicksight:PassDataSource",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":datasource/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSet",
+                "quicksight:DeleteDataSet",
+                "quicksight:PassDataSet",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dataset/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateAnalysis",
+                "quicksight:DeleteAnalysis",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":analysis/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDashboard",
+                "quicksight:DeleteDashboard",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dashboard/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "quicksight:DescribeTemplate",
+              "Effect": "Allow",
+              "Resource": "test-quicksight-template",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestBIReportingQuickSightSolutionHelperQuickSightPolicy59515C9D",
+        "Roles": Array [
+          Object {
+            "Ref": "TestSolutionHelperFunctionServiceRole7B84FD28",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestConfigTable31B6F7EE": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "type",
+            "AttributeType": "S",
+          },
+        ],
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "type",
+            "KeyType": "RANGE",
+          },
+        ],
+        "ProvisionedThroughput": Object {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestLoggingBucket077C0B0B": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AccessControl": "LogDeliveryWrite",
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "TestSolutionHelperFunction4CFAB303": Object {
+      "DependsOn": Array [
+        "TestSolutionHelperFunctionServiceRole7B84FD28",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "test-bucket",
+          "S3Key": "source.zip",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperFunctionServiceRole7B84FD28",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestSolutionHelperFunctionServiceRole7B84FD28": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TestUiReferenceTableAC519002": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "type",
+            "AttributeType": "S",
+          },
+        ],
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "type",
+            "KeyType": "RANGE",
+          },
+        ],
+        "ProvisionedThroughput": Object {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;

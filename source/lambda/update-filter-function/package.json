@@ -1,0 +1,28 @@
+{
+  "name": "update-filter-function",
+  "version": "1.0.0",
+  "author": "AWS Solutions",
+  "license": "Apache-2.0",
+  "description": "Receives messages from the DDB Streams for the Config and UI Reference Tables. When an update is detected, update an environment variable on the Filter Kinesis Stream lambda so its container will be refreshed",
+  "main": "index.js",
+  "scripts": {
+    "build:tsc": "tsc --project tsconfig.json",
+    "clean": "rm -rf node_modules/ dist/ coverage/ package-lock.json",
+    "build": "npm run clean && npm install && npm run build:tsc && npm prune --production && rsync -avrq ./node_modules ./dist",
+    "package": "npm run build && cd dist && zip -q -r9 ./package.zip * && cd ..",
+    "test": "jest --config jestconfig.json --coverage --silent"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.25",
+    "aws-sdk": "^2.853.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "moment": "^2.29.1"
+  }
+}

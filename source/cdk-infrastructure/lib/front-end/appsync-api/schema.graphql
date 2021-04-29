@@ -1,0 +1,134 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Query {
+  getConfigItems: [ConfigItem]
+  getUIReferenceItems: [UIReferenceItem]
+  getConfigItem(input: GetConfigItemInput!): ConfigItem
+  getUIReferenceItem(input: GetUIReferenceItemInput): UIReferenceItem
+  getRealTimeMachineData(id: ID!, startTimestamp: Int!, endTimestamp: Int!, incrementalRefresh: Boolean!): RealTimeDataItemConnection
+}
+
+type Mutation {
+  updateUIReferenceItem(input: UpdateUIReferenceItemInput): UIReferenceItem
+  updateMachineName(input: UpdateMachineNameInput): UIReferenceItem
+  updateMachineGrouping(input: UpdateMachineGroupingInput): UIReferenceItem
+  updateMachineConfig(input: UpdateMachineConfigInput): ConfigItem
+}
+
+type Subscription {
+  onUpdateUIReferenceItem: UIReferenceItem @aws_subscribe(mutations: ["updateUIReferenceItem", "updateMachineName", "updateMachineGrouping"])
+}
+
+type ConfigItem {
+  id: ID!
+  type: ConfigType!
+
+  msgFormatDataAliasDelimiter: String
+  msgFormatDataMessagesKeyName: String
+  msgFormatDataMessageTimestampFormat: String
+  msgFormatDataMessageTimestampKeyName: String
+  msgFormatDataMessageValueKeyName: String
+  msgFormatDataMessageAliasKeyName: String
+  msgFormatDataMessageQualityKeyName: String
+
+  uiReferenceMappingLocationKeys: String
+  uiReferenceMappingLineKeys: String
+
+  machineProductionCountTagName: String
+  machineStatusTagName: String
+  machineStatusUpValue: String
+  machineStatusDownValue: String
+  machineStatusIdleValue: String
+}
+
+type UIReferenceItem {
+  id: ID!
+  type: UIReferenceItemType!
+
+  name: String
+  machineStatus: String
+  machineStatusUpdatedTimestamp: Int
+  uiReferenceMappingLineKeys: String
+  uiReferenceMappingLocationKeys: String
+}
+
+type RealTimeDataItem {
+  id: ID!
+  messageTimestamp: Int!
+  realTimeTableTTLExpirationTimestamp: Int!
+  value: String!
+}
+
+type RealTimeDataItemChunk {
+  dataAsOfUTCUnixTimestamp: Int!
+  statusValue: String
+  productionCountValue: String!
+}
+
+type RealTimeDataItemConnection {
+  dataChunks: [RealTimeDataItemChunk]
+}
+
+input UpdateUIReferenceItemInput {
+	id: ID!
+	type: UIReferenceItemType!
+  expression: String
+  expressionNames: AWSJSON
+  expressionValues: AWSJSON
+}
+
+input UpdateMachineNameInput {
+  	id: ID!
+    name: String
+}
+
+input UpdateMachineConfigInput {
+	id: ID!
+  machineProductionCountTagName: String
+  machineStatusTagName: String
+  machineStatusUpValue: String
+  machineStatusDownValue: String
+  machineStatusIdleValue: String
+}
+
+input UpdateMachineGroupingInput {
+  uiReferenceMappingLocationKeys: String
+  uiReferenceMappingLineKeys: String
+}
+
+input AddRealTimeDataItemInput {
+  id: ID!
+  messageTimestamp: Int!
+  realTimeTableTTLExpirationTimestamp: Int!
+  value: String!
+}
+
+input GetConfigItemInput {
+  id: ID!
+  type: ConfigType!
+}
+
+input GetUIReferenceItemInput {
+  id: ID!
+  type: UIReferenceItemType!
+}
+
+enum ConfigType {
+  MESSAGE_FORMAT
+  MACHINE_CONFIG
+  UI_REFERENCE_MAPPING
+}
+
+enum UIReferenceItemType {
+  MACHINE
+  LOCATION
+  LINE
+  UI_REFERENCE_MAPPING
+}

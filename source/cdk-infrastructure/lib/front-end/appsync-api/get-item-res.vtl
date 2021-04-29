@@ -1,0 +1,8 @@
+## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+#if( $ctx.error )
+	$util.error("An error occurred. Please double check input parameters", "InputError")
+#else
+	$util.toJson($ctx.result)
+#end

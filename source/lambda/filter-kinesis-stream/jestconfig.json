@@ -1,0 +1,36 @@
+{
+    "roots": [
+        "<rootDir>/test"
+    ],
+    "transform": {
+        "^.+\\.(t|j)sx?$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+        "ts",
+        "js"
+    ],
+    "coveragePathIgnorePatterns": [
+        "/node_modules/",
+        "/build",
+        "/package",
+        "/dist"
+    ],
+    "coverageReporters": [
+        "text",
+        [
+            "lcov",
+            {
+                "projectRoot": "../../"
+            }
+        ]
+    ],
+    "modulePathIgnorePatterns": [
+        "/node_modules/",
+        "/build",
+        "/package",
+        "/dist"
+    ],
+    "setupFiles": [
+        "./test/setEnvironmentVariables.ts"
+    ]
+}

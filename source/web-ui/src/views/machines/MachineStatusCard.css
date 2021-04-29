@@ -1,0 +1,74 @@
+/* 
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
+*/
+.config-button {
+    float: right;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background: transparent !important;
+    border: transparent !important;
+    padding: 0 !important;
+}
+
+.card-title {
+    margin-top: 1rem;
+}
+
+.machine-title {
+    font-size: 0.9rem !important;
+}
+
+.modalLabel {
+    text-decoration: underline;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.machine-detail-link, .machine-detail-link:hover, .machine-detail-link:visited, .machine-detail-link:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+.machine-status-card.UP {
+    background-color: #6AAF35 !important;
+}
+
+.machine-status-card.DOWN {
+    background-color: #D13212 !important;
+}
+
+.machine-status-card.IDLE {
+    background-color: #DFB52C !important;
+}
+
+.machine-status-card.UNKNOWN {
+    background-color: #f8f9fa !important;
+}
+
+.machine-status-card {
+    background-color: #f8f9fa !important;
+}
+
+.map-status-value-header-tooltip {
+    cursor: pointer;
+    margin-left: 1rem;
+    font-size: small;
+}
+
+.machine-card-text {
+    font-size: 0.7rem;
+}
+
+.map-status-value-info-icon {
+    font-size: 1.2rem;
+}
+
+.map-status-value-table .form-group {
+    margin: 0;
+}
+
+.map-status-value-table .form-label {
+    margin: 0;
+}

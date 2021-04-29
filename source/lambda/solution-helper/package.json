@@ -1,0 +1,31 @@
+{
+  "name": "solution-helper",
+  "version": "1.0.0",
+  "author": "AWS Solutions",
+  "license": "Apache-2.0",
+  "description": "Performs various Solution lifecycle actions when invoked as a CloudFormation Custom Resource",
+  "main": "index.js",
+  "scripts": {
+    "build:tsc": "tsc --project tsconfig.json",
+    "clean": "rm -rf node_modules/ dist/ coverage/ package-lock.json",
+    "build": "npm run clean && npm install && npm run build:tsc && npm prune --production && rsync -avrq ./node_modules ./dist",
+    "package": "npm run build && cd dist && zip -q -r9 ./package.zip * && cd ..",
+    "test": "npm install && jest --coverage --silent"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.25",
+    "@types/uuid": "^8.3.0",
+    "aws-sdk": "2.804.0",
+    "axios-mock-adapter": "^1.19.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "moment": "^2.29.1",
+    "uuid": "^8.3.2"
+  }
+}

@@ -1,0 +1,31 @@
+## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    "version": "2018-05-29",
+    "operation": "UpdateItem",
+    "key" : {
+        "id" : $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
+        "type" : $util.dynamodb.toDynamoDBJson("MACHINE_CONFIG")
+    },
+    "update": {
+        "expression": "SET #pctn = :pctn, #stn = :stn, #suv = :suv, #sdv = :sdv, #siv = :siv",
+        "expressionNames": {
+            "#pctn": "machineProductionCountTagName",
+            "#stn": "machineStatusTagName",
+            "#suv": "machineStatusUpValue",
+            "#sdv": "machineStatusDownValue",
+            "#siv": "machineStatusIdleValue"
+        },
+        "expressionValues": {
+            ":pctn": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineProductionCountTagName),
+            ":stn": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusTagName),
+            ":suv": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusUpValue),
+            ":sdv": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusDownValue),
+            ":siv": $util.dynamodb.toDynamoDBJson($ctx.args.input.machineStatusIdleValue)
+        }
+    },
+    "condition": {
+        "expression": "attribute_exists(id)"
+    }
+}

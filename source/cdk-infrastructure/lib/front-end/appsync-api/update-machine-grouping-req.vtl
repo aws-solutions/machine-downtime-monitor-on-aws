@@ -1,0 +1,22 @@
+## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: Apache-2.0
+
+{
+    "version": "2018-05-29",
+    "operation": "UpdateItem",
+    "key" : {
+        "id" : $util.dynamodb.toDynamoDBJson("DEFAULT"),
+        "type" : $util.dynamodb.toDynamoDBJson("UI_REFERENCE_MAPPING")
+    },
+    "update": {
+        "expression": "SET #locKeys = :locKeys, #lineKeys = :lineKeys",
+        "expressionNames": {
+            "#locKeys": "uiReferenceMappingLocationKeys",
+            "#lineKeys": "uiReferenceMappingLineKeys"
+        },
+        "expressionValues": {
+            ":locKeys": $util.dynamodb.toDynamoDBJson($ctx.args.input.uiReferenceMappingLocationKeys),
+            ":lineKeys": $util.dynamodb.toDynamoDBJson($ctx.args.input.uiReferenceMappingLineKeys)
+        }
+    }
+}

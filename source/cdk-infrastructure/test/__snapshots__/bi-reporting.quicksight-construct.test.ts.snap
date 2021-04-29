@@ -1,0 +1,248 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BI reporting QuickSight snapshot and variables 1`] = `
+Object {
+  "Resources": Object {
+    "TestCustomResource": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ServiceToken": "test-service-token",
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestQuickSightQuickSightCustomResourceA152450C": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "TestCustomResource",
+        "TestQuickSightSolutionHelperQuickSightPolicyB3914B77",
+      ],
+      "Properties": Object {
+        "AccountId": Object {
+          "Ref": "AWS::AccountId",
+        },
+        "Action": "CREATE_QUICKSIGHT",
+        "GlueDatabaseName": "test-database",
+        "GlueTableName": "test-table",
+        "Metadata": Object {
+          "BucketName": "test-bucket",
+          "MachineConfigInformationPrefix": "machine_config_information",
+          "MachineInformationPrefix": "machine_information",
+          "ManifestPrefix": "manifest",
+        },
+        "PrincipalArn": "test-quicksight-principal-arn",
+        "QuickSightTemplate": "test-quicksight-template",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperFunction4CFAB303",
+            "Arn",
+          ],
+        },
+        "StackName": Object {
+          "Ref": "AWS::StackName",
+        },
+      },
+      "Type": "AWS::CloudFormation::CustomResource",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TestQuickSightSolutionHelperQuickSightPolicyB3914B77": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSource",
+                "quicksight:DeleteDataSource",
+                "quicksight:PassDataSource",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":datasource/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDataSet",
+                "quicksight:DeleteDataSet",
+                "quicksight:PassDataSet",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dataset/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateAnalysis",
+                "quicksight:DeleteAnalysis",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":analysis/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "quicksight:CreateDashboard",
+                "quicksight:DeleteDashboard",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":quicksight:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":dashboard/",
+                    Object {
+                      "Ref": "AWS::StackName",
+                    },
+                    "*",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "quicksight:DescribeTemplate",
+              "Effect": "Allow",
+              "Resource": "test-quicksight-template",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TestQuickSightSolutionHelperQuickSightPolicyB3914B77",
+        "Roles": Array [
+          Object {
+            "Ref": "TestSolutionHelperFunctionServiceRole7B84FD28",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TestSolutionHelperFunction4CFAB303": Object {
+      "DependsOn": Array [
+        "TestSolutionHelperFunctionServiceRole7B84FD28",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "test-bucket",
+          "S3Key": "source.zip",
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "TestSolutionHelperFunctionServiceRole7B84FD28",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "TestSolutionHelperFunctionServiceRole7B84FD28": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+}
+`;
