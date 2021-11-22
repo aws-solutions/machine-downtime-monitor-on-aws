@@ -5,11 +5,13 @@ import React from 'react';
 import './Overview.css';
 import { API, graphqlOperation, I18n } from 'aws-amplify';
 import { IMachineReferenceDataItem, IMessageFormatConfigItem, IUIReferenceMappingItem, ILocationReferenceDataItem, ILineReferenceDataItem, ReferenceDataTypes, IReferenceDataItem, ConfigType } from '../../util/data-structures';
-import { getConfigItem, IGetConfigItemResponse } from '../../graphql/queries';
+import { getConfigItem, IGetConfigItemResponse, getUIReferenceItems, IGetUIReferenceItemsResponse } from '../../graphql/queries';
+import { onUpdateUIReferenceItem, IOnUpdateUIReferenceItemResponse } from '../../graphql/subscriptions';
 import { updateMachineGrouping } from '../../graphql/mutations';
 import { LargeNotification } from '../shared/LargeNotification';
 import { MachineStatusCard } from '../machines/MachineStatusCard';
 import { LineRow } from '../lines/LineRow';
+import { Form } from 'react-bootstrap';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown'
 import Container from 'react-bootstrap/Container';
@@ -18,10 +20,6 @@ import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-
-import { getUIReferenceItems, IGetUIReferenceItemsResponse } from '../../graphql/queries';
-import { onUpdateUIReferenceItem, IOnUpdateUIReferenceItemResponse } from '../../graphql/subscriptions';
-import { Form } from 'react-bootstrap';
 
 type OverviewProps = {
     selectedLocationStorageKeyName: string;
@@ -64,7 +62,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
         this.onLocationSelect = this.onLocationSelect.bind(this);
         this.onClickConfig = this.onClickConfig.bind(this);
         this.onCloseConfigModal = this.onCloseConfigModal.bind(this);
-        this.onChangeUIRefeferenceMapping = this.onChangeUIRefeferenceMapping.bind(this);
+        this.onChangeUIReferenceMapping = this.onChangeUIReferenceMapping.bind(this);
         this.onUpdateUIReferenceMapping = this.onUpdateUIReferenceMapping.bind(this);
     }
 
@@ -417,7 +415,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                         <Form.Group controlId="locationSelections">
                             <Form.Label><strong className="machine-config-label">{`${I18n.get('modal.configGrouping.machineLocationSelectionLabel')}`}</strong></Form.Label>
                             {Object.keys(sampleMachineIdTokens).map(idx => (
-                                <Form.Check className="grouping-select-checkbox" checked={this.state.newLocationUIReferenceMapping.has(idx)} disabled={this.state.isMutating} onChange={this.onChangeUIRefeferenceMapping} type="checkbox" id={`location-${idx}`} key={`location-check-${idx}`} label={sampleMachineIdTokens[parseInt(idx, 10)]} />
+                                <Form.Check className="grouping-select-checkbox" checked={this.state.newLocationUIReferenceMapping.has(idx)} disabled={this.state.isMutating} onChange={this.onChangeUIReferenceMapping} type="checkbox" id={`location-${idx}`} key={`location-check-${idx}`} label={sampleMachineIdTokens[parseInt(idx, 10)]} />
                             ))}
                         </Form.Group>
                     </Col>
@@ -427,7 +425,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
                         <Form.Group controlId="lineSelections">
                             <Form.Label><strong className="machine-config-label">{`${I18n.get('modal.configGrouping.machineLineSelectionLabel')}`}</strong></Form.Label>
                             {Object.keys(sampleMachineIdTokens).map(idx => (
-                                <Form.Check className="grouping-select-checkbox" checked={this.state.newLineUIReferenceMapping.has(idx)} disabled={this.state.isMutating} onChange={this.onChangeUIRefeferenceMapping} type="checkbox" id={`line-${idx}`} key={`line-check-${idx}`} label={sampleMachineIdTokens[parseInt(idx, 10)]} />
+                                <Form.Check className="grouping-select-checkbox" checked={this.state.newLineUIReferenceMapping.has(idx)} disabled={this.state.isMutating} onChange={this.onChangeUIReferenceMapping} type="checkbox" id={`line-${idx}`} key={`line-check-${idx}`} label={sampleMachineIdTokens[parseInt(idx, 10)]} />
                             ))}
                         </Form.Group>
                     </Col>
@@ -455,7 +453,7 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
             </Modal.Body>);
     }
 
-    onChangeUIRefeferenceMapping(event: any) {
+    onChangeUIReferenceMapping(event: any) {
         if (!this._isMounted) { return; }
         const checkboxTarget = event.currentTarget;
         const checkboxId = checkboxTarget.id;

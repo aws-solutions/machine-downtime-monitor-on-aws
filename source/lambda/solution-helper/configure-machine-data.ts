@@ -7,7 +7,7 @@ import { getOptions } from '../util/metrics';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 const ddbDocClient = new DocumentClient(getOptions());
 
-export async function handleConfigureMachinieData(event: IConfigMachineDataRequest): Promise<string> {
+export async function handleConfigureMachineData(event: IConfigMachineDataRequest): Promise<string> {
     if (event.RequestType === 'Create') {
         if (!event.ResourceProperties.ConfigId) { throw new Error('ConfigId was not supplied'); }
 

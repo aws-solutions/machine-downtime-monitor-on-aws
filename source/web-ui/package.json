@@ -1,6 +1,6 @@
 {
   "name": "web-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "AWS Solutions",
   "license": "Apache-2.0",
   "description": "Dashboard for the Machine Downtime Monitor on AWS Solution",

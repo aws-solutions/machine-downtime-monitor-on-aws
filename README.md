@@ -1,4 +1,4 @@
-**[🚀 Solution Landing Page](aws.amazon.com/solutions/implementations/machine-downtime-monitor-on-aws/)** | **[🚧 Feature request](https://github.com/awslabs/machine-downtime-monitor-on-aws/issues/new?assignees=&labels=feature-request%2C+enhancement&template=feature_request.md&title=)** | **[🐛 Bug Report](https://github.com/awslabs/machine-downtime-monitor-on-aws/issues/new?assignees=&labels=bug%2C+triage&template=bug_report.md&title=)**
+**[🚀 Solution Landing Page](aws.amazon.com/solutions/implementations/machine-downtime-monitor-on-aws/)** | **[🚧 Feature request](https://github.com/aws-solutions/machine-downtime-monitor-on-aws/issues/new?assignees=&labels=feature-request%2C+enhancement&template=feature_request.md&title=)** | **[🐛 Bug Report](https://github.com/aws-solutions/machine-downtime-monitor-on-aws/issues/new?assignees=&labels=bug%2C+triage&template=bug_report.md&title=)**
 
 Note: If you want to use the solution without building from source, navigate to Solution Landing Page
 
@@ -48,57 +48,36 @@ The dashboard is a React web application built using AWS Amplify. The dashboard�
 <a name="customizing-the-solution"></a>
 # Customizing the Solution
 
-<a name="prerequisites-for-customization"></a>
-## Prerequisites for Customization
-* [AWS Command Line Interface](https://aws.amazon.com/cli/)
-* Node 14.x (Lambda functions use the Node 14.x runtime)
-* Clone this repository: `git clone https://github.com/awslabs/machine-downtime-monitor-on-aws.git`
-
-<a name="build"></a>
-## Build
-*Declare Environment Variables*
-```bash
-export REGION=aws-region-code # the AWS region to launch the solution (e.g. us-east-1)
-export SOLUTION_BUCKET_NAME_PLACEHOLDER=my-bucket-name # bucket where customized code will reside
-export SOLUTION_NAME_PLACEHOLDER=my-solution-name
-export SOLUTION_VERSION_PLACEHOLDER=my-version # version number for the customized code
-export QS_TEMPLATE_ACCOUNT_ID=The account from which the Amazon QuickSight templates should be sourced for Amazon QuickSight Analysis and Dashboard creation
-export QS_TEMPLATE_NAMESPACE=Prefix for the QuickSight template ID
+## Running unit tests for customization
+* Clone the repository, then make the desired code changes
+* Next, run unit tests to make sure added customization passes the tests
 ```
-
-*Run Build Script*
-```bash
-cd ./deployment
-chmod +x ./build-s3-dist.sh
-./build-s3-dist.sh $SOLUTION_BUCKET_NAME_PLACEHOLDER $SOLUTION_NAME_PLACEHOLDER $SOLUTION_VERSION_PLACEHOLDER $SOLUTION_BUCKET_NAME_PLACEHOLDER $QS_TEMPLATE_ACCOUNT_ID $QS_TEMPLATE_NAMESPACE
-```
-
-<a name="unit-test"></a>
-## Unit Test
-*Run Unit Test Script*
-```bash
 cd ./deployment
 chmod +x ./run-unit-tests.sh
 ./run-unit-tests.sh
 ```
 
-<a name="deploy"></a>
-## Deploy
-*Create an Amazon S3 Bucket*
-The AWS CloudFormation template is configured to pull the AWS Lambda deployment packages from Amazon S3 bucket in the region the template is being launched in. Create a bucket in the desitred region name appended to the name of the bucket. **Note:** you must have the AWS Command Line Interface installed.
+## Building distributable for customization
+* Configure the bucket name of your target Amazon S3 distribution bucket.
 ```bash
-aws s3 mb s3://$SOLUTION_BUCKET_NAME_PLACEHOLDER-$REGION --region $REGION
+export SOLUTION_BUCKET_NAME_PLACEHOLDER=my-bucket-prefix # S3 bucket name prefix
+export SOLUTION_NAME_PLACEHOLDER=my-solution-name
+export SOLUTION_VERSION_PLACEHOLDER=my-version # version number for the customized code
+export REGION=aws-region-code # the AWS region to test the solution (e.g. us-east-1)
+export QS_TEMPLATE_ACCOUNT_ID # The account from which the Amazon QuickSight templates should be sourced for Amazon QuickSight Analysis and Dashboard creation
+export QS_TEMPLATE_NAMESPACE # Prefix for the QuickSight template ID
+```
+_Note:_ When you define `SOLUTION_BUCKET_NAME_PLACEHOLDER`, a randomized value is recommended. You will need to create an S3 bucket where the name is `<SOLUTION_BUCKET_NAME_PLACEHOLDER>-<REGION>`. The solution's CloudFormation template will expect the source code to be located in a bucket matching that name.
+
+* Now build the distributable:
+```bash
+chmod +x ./build-s3-dist.sh
+./build-s3-dist.sh $SOLUTION_BUCKET_NAME_PLACEHOLDER $SOLUTION_NAME_PLACEHOLDER $SOLUTION_VERSION_PLACEHOLDER $QS_TEMPLATE_ACCOUNT_ID $QS_TEMPLATE_NAMESPACE
 ```
 
-*Upload deployment assets to your Amazon S3 bucket*
-```bash
-aws s3 cp ./regional-s3-assets/ s3://$SOLUTION_BUCKET_NAME_PLACEHOLDER-$REGION/$SOLUTION_NAME_PLACEHOLDER/$SOLUTION_VERSION_PLACEHOLDER/ --recursive --acl bucket-owner-full-control
-aws s3 cp ./global-s3-assets/ s3://$SOLUTION_BUCKET_NAME_PLACEHOLDER-$REGION/$SOLUTION_NAME_PLACEHOLDER/$SOLUTION_VERSION_PLACEHOLDER/ --recursive --acl bucket-owner-full-control
-```
-
-*Launch Machine Downtime Monitor on AWS*
-* Get the link of machine-downtime-monitor-on-aws.template uploaded to your Amazon S3 bucket
-* Deploy into your account by launching a new AWS CloudFormation stack using the S3 link
+* Deploy the distributable to the Amazon S3 bucket in your account. Make sure you are uploading the distributable to the `<SOLUTION_BUCKET_NAME_PLACEHOLDER>-<REGION>` bucket.
+* Get the link of the solution template uploaded to your Amazon S3 bucket.
+* Deploy the solution to your account by launching a new AWS CloudFormation stack using the link of the solution template in Amazon S3.
 
 <a name="file-structure"></a>
 # File structure
@@ -127,4 +106,4 @@ This solution collects anonymous operational metrics to help AWS improve the qua
 <a name="license"></a>
 # License
 
-See license [here](https://github.com/awslabs/machine-downtime-monitor-on-aws/blob/master/LICENSE.txt) 
+See license [here](https://github.com/aws-solutions/machine-downtime-monitor-on-aws/blob/master/LICENSE) 

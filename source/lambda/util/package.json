@@ -1,6 +1,6 @@
 {
   "name": "utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "AWS Solutions",
   "license": "Apache-2.0",
   "description": "Utilities to be used in the solution's Lambda packages",

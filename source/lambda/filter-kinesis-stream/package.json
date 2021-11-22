@@ -1,6 +1,6 @@
 {
   "name": "filter-kinesis-stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "AWS Solutions",
   "license": "Apache-2.0",
   "description": "Filters messages from the Kinesis Stream for storage in the real-time dashboard DynamoDB table",
@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.25",
-    "aws-sdk": "^2.853.0",
+    "aws-sdk": "2.1001.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
@@ -25,6 +25,7 @@
     "aws-appsync": "^4.0.3",
     "axios": "^0.21.1",
     "es6-promise": "^4.2.8",
+    "graphql": "^15.6.1",
     "graphql-tag": "^2.11.0",
     "isomorphic-fetch": "^3.0.0",
     "moment": "^2.29.1"

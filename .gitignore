@@ -3,6 +3,7 @@ deployment/global-s3-assets
 deployment/regional-s3-assets
 deployment/open-source
 deployment/create-stack.sh
+deployment/update-packages.sh
 source/**/dist
 
 # dependencies

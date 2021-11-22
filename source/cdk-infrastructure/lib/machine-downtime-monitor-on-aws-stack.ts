@@ -173,10 +173,10 @@ export class MachineDowntimeMonitorOnAwsStack extends Stack {
       parameters: { ExistingGreengrassGroupID: m2cExistingGreengrassGroupID.valueAsString, ExistingKinesisStreamName: realTimeProcessing.streamName }
     }).cfnOptions.condition = deployM2CCondition;
 
-    new CfnOutput(this, 'DashboardUrl', { description: `${props.solutionDisplayName} Dashboard`, value: `https://${frontEnd.websiteDistributionDomainName}` });
-    new CfnOutput(this, 'StreamName', { description: 'Name of the Kinesis Stream that is the source of the machine data', value: realTimeProcessing.streamName });
-    new CfnOutput(this, 'RawDataBucket', { description: 'S3 bucket that will hold all raw data that was sent through the Kinesis Stream', value: realTimeProcessing.rawDataBucketName });
-    new CfnOutput(this, 'ParquetOutputBucket', { description: 'S3 bucket that will hold parquet data converted from the raw data bucket', value: biReporting.glueBucket.bucketName });
-    new CfnOutput(this, 'GlueMetadataBucket', { description: 'S3 bucket that will store Glue metadata including QuickSight manifest, CSVs, and Glue job scripts', value: biReporting.glueMetadataBucket.bucketName });
+    new CfnOutput(this, 'DashboardUrl', { description: `${props.solutionDisplayName} Dashboard`, value: `https://${frontEnd.websiteDistributionDomainName}` }); // NOSONAR: typescript:S1848
+    new CfnOutput(this, 'StreamName', { description: 'Name of the Kinesis Stream that is the source of the machine data', value: realTimeProcessing.streamName });  // NOSONAR: typescript:S1848
+    new CfnOutput(this, 'RawDataBucket', { description: 'S3 bucket that will hold all raw data that was sent through the Kinesis Stream', value: realTimeProcessing.rawDataBucketName }); // NOSONAR: typescript:S1848
+    new CfnOutput(this, 'ParquetOutputBucket', { description: 'S3 bucket that will hold parquet data converted from the raw data bucket', value: biReporting.glueBucket.bucketName });  // NOSONAR: typescript:S1848
+    new CfnOutput(this, 'GlueMetadataBucket', { description: 'S3 bucket that will store Glue metadata including QuickSight manifest, CSVs, and Glue job scripts', value: biReporting.glueMetadataBucket.bucketName });  // NOSONAR: typescript:S1848
   }
 }
