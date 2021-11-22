@@ -57,7 +57,7 @@ export class Authentication extends Construct {
             preventUserExistenceErrors: true
         });
 
-        new CfnUserPoolUser(this, 'DefaultUser', {
+        new CfnUserPoolUser(this, 'DefaultUser', {  // NOSONAR: typescript:S1848
             userPoolId: this.userPool.userPoolId,
             username: props.defaultUserEmail,
             desiredDeliveryMediums: ['EMAIL'],
@@ -86,7 +86,7 @@ export class Authentication extends Construct {
             description: `Identity Pool Authenticated Role for ${props.solutionDisplayName}`
         });
 
-        new CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', {
+        new CfnIdentityPoolRoleAttachment(this, 'IdentityPoolRoleAttachment', { // NOSONAR: typescript:S1848
             identityPoolId: this.identityPool.ref,
             roles: { authenticated: this.authenticatedRole.roleArn }
         });

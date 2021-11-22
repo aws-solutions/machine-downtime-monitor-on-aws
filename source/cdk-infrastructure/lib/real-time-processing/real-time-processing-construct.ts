@@ -3,7 +3,7 @@
 
 import { Construct, Duration } from '@aws-cdk/core';
 import { Bucket } from '@aws-cdk/aws-s3';
-import { Runtime, Code, StartingPosition, CfnFunction } from '@aws-cdk/aws-lambda';
+import { Runtime, Code, StartingPosition } from '@aws-cdk/aws-lambda';
 import { DynamoEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { GraphqlApi } from '@aws-cdk/aws-appsync';
 import { Table } from '@aws-cdk/aws-dynamodb';

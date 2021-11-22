@@ -213,7 +213,7 @@ export class Etl extends Construct {
     });
     glueConfigurationJob.node.addDependency(this.glueCustomResource);
 
-    new CfnTrigger(this, 'GlueConfigurationJobTrigger', {
+    new CfnTrigger(this, 'GlueConfigurationJobTrigger', { // NOSONAR: typescript:S1848
       name: `${Aws.STACK_NAME}-ConfigurationJobTrigger`,
       actions: [{ jobName: glueConfigurationJob.ref }],
       type: 'SCHEDULED',
@@ -279,7 +279,7 @@ export class Etl extends Construct {
     });
     glueConvertParquetJob.node.addDependency(this.glueCustomResource);
 
-    new CfnTrigger(this, 'GlueConvertParquetJobTrigger', {
+    new CfnTrigger(this, 'GlueConvertParquetJobTrigger', {  // NOSONAR: typescript:S1848
       name: `${Aws.STACK_NAME}-ConvertParquetJobTrigger`,
       actions: [{ jobName: glueConvertParquetJob.ref }],
       type: 'CONDITIONAL',
@@ -343,13 +343,13 @@ export class Etl extends Construct {
       },
       databaseName: this.glueDatabase.databaseName,
       description: `Glue crawler for ${Aws.STACK_NAME} CloudFormation stack`,
-      schemaChangePolicy : {
+      schemaChangePolicy: {
         deleteBehavior: 'LOG',
         updateBehavior: 'UPDATE_IN_DATABASE'
       }
     });
 
-    new CfnTrigger(this, 'GlueCrawlerTrigger', {
+    new CfnTrigger(this, 'GlueCrawlerTrigger', {  // NOSONAR: typescript:S1848
       name: `${Aws.STACK_NAME}-CrawlerTrigger`,
       actions: [{ crawlerName: glueCrawler.ref }],
       type: 'CONDITIONAL',
@@ -399,7 +399,7 @@ export class Etl extends Construct {
     });
     glueUpdateCrawlerJob.node.addDependency(this.glueCustomResource);
 
-    new CfnTrigger(this, 'GlueUpdateCrawlerJobTrigger', {
+    new CfnTrigger(this, 'GlueUpdateCrawlerJobTrigger', { // NOSONAR: typescript:S1848
       name: `${Aws.STACK_NAME}-UpdateCrawlerJobTrigger`,
       actions: [{ jobName: glueUpdateCrawlerJob.ref }],
       type: 'CONDITIONAL',
@@ -415,7 +415,7 @@ export class Etl extends Construct {
       workflowName: glueWorkflow.ref
     });
 
-    new Policy(this, 'GlueCommonPolicy', {
+    new Policy(this, 'GlueCommonPolicy', {  // NOSONAR: typescript:S1848
       statements: [
         new PolicyStatement({
           effect: Effect.ALLOW,

@@ -14,7 +14,6 @@ export class LargeNotification extends React.Component<LargeNotificationProps, L
         this.state = { displayText: this.props.displayText };
     }
 
-    componentDidMount() { }
     componentDidUpdate(prevProps: LargeNotificationProps) {
         if (this.props.displayText !== prevProps.displayText) {
             this.setState({ displayText: this.props.displayText });
@@ -26,7 +25,7 @@ export class LargeNotification extends React.Component<LargeNotificationProps, L
 
         return (
             <Jumbotron fluid>
-                    <h4 className="notification-text">{this.state.displayText}</h4>
+                <h4 className="notification-text">{this.state.displayText}</h4>
             </Jumbotron>
         );
     }

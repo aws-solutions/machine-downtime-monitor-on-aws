@@ -9,8 +9,8 @@ import {
     ICreateQuickSightRequest, CustomResourceActions, StatusTypes,
 } from './custom-resource-utils';
 import { handleConfigureUI } from './configure-ui';
-import { handleConfigureMachinieData } from './configure-machine-data';
-import { handleGenerateSolutionConstants } from './generate-solution-constatns';
+import { handleConfigureMachineData } from './configure-machine-data';
+import { handleGenerateSolutionConstants } from './generate-solution-constants';
 import { handleSolutionLifecycleMetric } from './solution-lifecycle-metric';
 import { handleEtlConfiguration } from './configure-etl';
 import { handleQuickSightResourceCreation } from './create-quicksight';
@@ -33,7 +33,7 @@ exports.handler = async (event: ICustomResourceRequest, context: ILambdaContext)
                 completionStatus.Data.Message = await handleConfigureUI(event as IConfigUIRequest);
                 break;
             case CustomResourceActions.CONFIGURE_MACHINE_DATA:
-                completionStatus.Data.Message = await handleConfigureMachinieData(event as IConfigMachineDataRequest);
+                completionStatus.Data.Message = await handleConfigureMachineData(event as IConfigMachineDataRequest);
                 break;
             case CustomResourceActions.GENERATE_SOLUTION_CONSTANTS:
                 const handlerOutput = handleGenerateSolutionConstants(event as IGenerateUUIDRequest);
@@ -87,5 +87,5 @@ async function respondToCloudFormation(event: ICustomResourceRequest, logStreamN
     };
 
     console.log('Responding to CloudFormation', responseBody);
-    return await axios.put(event.ResponseURL, responseBody, config);
+    return axios.put(event.ResponseURL, responseBody, config);
 }

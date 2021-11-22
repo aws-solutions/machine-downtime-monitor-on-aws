@@ -1062,7 +1062,7 @@ describe('Verbose logging', () => {
         expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
-    test('First occurence of machine', async () => {
+    test('First occurrence of machine', async () => {
         mockGetOptions.mockImplementationOnce(() => { return {}; });
         process.env.VERBOSE_LOGGING = 'Yes';
         const lambdaFn = require('../index');

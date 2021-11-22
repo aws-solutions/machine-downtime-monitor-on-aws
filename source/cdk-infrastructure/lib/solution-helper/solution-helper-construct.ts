@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { Construct, CustomResource, Duration, CfnCondition, CfnCustomResource, Fn, Aws } from '@aws-cdk/core';
+import { Construct, CustomResource, Duration, CfnCondition, CfnCustomResource, Aws } from '@aws-cdk/core';
 import { Bucket, IBucket } from '@aws-cdk/aws-s3';
 import { Table } from '@aws-cdk/aws-dynamodb';
 import { Function as LambdaFunction, Runtime, Code, CfnFunction } from '@aws-cdk/aws-lambda';
@@ -108,7 +108,7 @@ export class SolutionHelper extends Construct {
         // Allows the custom resource to place the static assets for the Amplify front-end into the hosting bucket
         props.hostingBucket.grantPut(this.customResourceLambda);
 
-        new CustomResource(this, 'CopyAssetsCustomResource', {
+        new CustomResource(this, 'CopyAssetsCustomResource', {  // NOSONAR: typescript:S1848
             serviceToken: this.customResourceLambda.functionArn,
             properties: {
                 Action: 'CONFIGURE_UI',
@@ -131,7 +131,7 @@ export class SolutionHelper extends Construct {
         props.configTable.grantWriteData(this.customResourceLambda);
         props.uiReferenceTable.grantWriteData(this.customResourceLambda);
 
-        new CustomResource(this, 'ConfigureMachineDataCustomResource', {
+        new CustomResource(this, 'ConfigureMachineDataCustomResource', {    // NOSONAR: typescript:S1848
             serviceToken: this.customResourceLambda.functionArn,
             properties: {
                 Action: 'CONFIGURE_MACHINE_DATA',

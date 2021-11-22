@@ -6,7 +6,7 @@ import { IMachineDowntimeMonitorOnAwsStackProps, MachineDowntimeMonitorOnAwsStac
 
 const app = new cdk.App();
 
-new MachineDowntimeMonitorOnAwsStack(app, 'MachineDowntimeMonitorOnAwsStack', getProps());
+new MachineDowntimeMonitorOnAwsStack(app, 'MachineDowntimeMonitorOnAwsStack', getProps());  // NOSONAR: typescript:S1848
 
 function getProps(): IMachineDowntimeMonitorOnAwsStackProps {
     const {
